@@ -8,7 +8,11 @@
   `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options: DENY`,
   `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`. `X-Powered-By` is disabled.
 - **External links** use `rel="noopener noreferrer"`.
-- **Dependencies**: Dependabot runs weekly, and CI runs lint, typecheck and build on every PR.
+- **Dependencies**: Dependabot runs weekly. CI fails on high-severity advisories in production deps
+  (`npm audit --omit=dev`), and dependency review blocks PRs that add vulnerable packages.
+- **Code scanning**: CodeQL (`security-extended`) runs on every PR, on pushes and weekly.
+- **Regression tests**: `tests/e2e/security.spec.ts` fails CI if a header is removed or weakened.
+- **Branch protection**: `main` and `develop` need a PR with a passing `check`, and force-push and deletion are blocked.
 
 Verify after deploy: `curl -sI https://cdls.dev` and check [securityheaders.com](https://securityheaders.com).
 

@@ -21,12 +21,13 @@ Everything the site says lives in [`src/content/`](src/content):
 
 ## Scripts
 
-| Command          | What                            |
-| ---------------- | ------------------------------- |
-| `npm run dev`    | dev server                      |
-| `npm run check`  | lint + typecheck + format check |
-| `npm run build`  | production build                |
-| `npm run format` | format code                     |
+| Command            | What                                   |
+| ------------------ | -------------------------------------- |
+| `npm run dev`      | dev server                             |
+| `npm run check`    | lint + typecheck + format + unit tests |
+| `npm run build`    | production build                       |
+| `npm run test:e2e` | browser tests (after build)            |
+| `npm run format`   | format code                            |
 
 ## Docs
 
