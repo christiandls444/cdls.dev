@@ -68,10 +68,22 @@ docs/                  ARCHITECTURE, DESIGN, SECURITY, DEPLOYMENT
 
 ```bash
 npm run dev          # local dev at http://localhost:3000
-npm run check        # lint + typecheck + format check (CI runs this + build)
+npm run check        # lint + typecheck + format check + unit tests
 npm run build        # production build; confirm routes are ○ Static
+npm run test:e2e     # Playwright against the build: smoke, security headers, a11y (run build first)
 npm run format       # prettier (sorts Tailwind classes too)
 ```
+
+## Tests
+
+| Layer            | Where                        | Guards                                                        |
+| ---------------- | ---------------------------- | ------------------------------------------------------------- |
+| Unit (Vitest)    | `tests/unit/`                | content rules: valid links, one-line summaries, unique slugs  |
+| E2E (Playwright) | `tests/e2e/home.spec.ts`     | page renders, no console errors, styles load, light/dark, 404 |
+| Security         | `tests/e2e/security.spec.ts` | security headers, `noopener` links, robots outside production |
+| Accessibility    | `tests/e2e/a11y.spec.ts`     | axe WCAG 2.1 A/AA in light and dark                           |
+
+Add a test with every feature. If you add a route, add it to the header test loop in `security.spec.ts`.
 
 ## Git workflow
 
@@ -96,5 +108,5 @@ Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pas
 
 ## Definition of done
 
-`npm run check` and `npm run build` pass. No new client components without a reason. No secrets in code.
+`npm run check`, `npm run build` and `npm run test:e2e` pass. No new client components without a reason. No secrets in code.
 Docs updated if you changed structure, tokens, headers or deployment.
