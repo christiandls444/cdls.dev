@@ -73,6 +73,24 @@ npm run build        # production build; confirm routes are ○ Static
 npm run format       # prettier (sorts Tailwind classes too)
 ```
 
+## Git workflow
+
+| Branch                                 | Role                         | Deploys to                          |
+| -------------------------------------- | ---------------------------- | ----------------------------------- |
+| `main`                                 | production                   | `cdls.dev`                          |
+| `develop`                              | staging / integration        | `staging.cdls.dev` (Vercel preview) |
+| `feat/*`, `fix/*`, `chore/*`, `docs/*` | one change each, short-lived | unique Vercel preview URL           |
+
+1. Branch from `develop`: `git switch develop && git pull && git switch -c feat/<short-name>`.
+2. PR into **`develop`** → CI green → **squash merge**. Check it on staging.
+3. Release: PR **`develop` → `main`** → **merge commit** (never squash, or the branches diverge).
+4. Hotfix: `fix/*` from `main` → PR into `main`, then merge `main` back into `develop`.
+
+Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pass, no force-push or deletion.
+
+Commits use [Conventional Commits](https://www.conventionalcommits.org): `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `style:`.
+**Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
+
 ## Definition of done
 
 `npm run check` and `npm run build` pass. No new client components without a reason. No secrets in code.
