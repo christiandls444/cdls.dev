@@ -3,6 +3,10 @@ updates:
   - package-ecosystem: npm
     directory: /
     target-branch: develop
+    commit-message: # -> "chore(deps): bump …" / "chore(deps-dev): bump …"
+      prefix: chore
+      prefix-development: chore
+      include: scope
     schedule:
       interval: weekly
     groups:
@@ -20,5 +24,8 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     target-branch: develop
+    commit-message: # -> "ci(deps): bump …"
+      prefix: ci
+      include: scope
     schedule:
       interval: monthly
