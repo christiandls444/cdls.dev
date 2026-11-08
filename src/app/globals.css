@@ -12,7 +12,7 @@
   --fg: #0a0a0a;
   --muted: #6b6b66;
   --line: #e7e5df;
-  --gold: #b08a1e; /* darker gold: readable on white */
+  --gold: #8a6a12; /* antique gold: 4.8:1 on bg, passes WCAG AA for small text */
   --gold-soft: #f5edd6;
   --blue: #1e3a8a;
 }
