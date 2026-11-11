@@ -13,13 +13,31 @@ export type SocialLink = {
 export type SiteConfig = {
   name: string;
   shortName: string;
+  /** Full role, used in metadata (page title, search results). */
   role: string;
+  /** Hero badge lines (role · place). Use exact titles so they match LinkedIn. Max 2. */
+  badges: { role: string; org: string }[];
+  /** Shown one at a time (shuffled) when the hero name is hovered or tapped. 1–3 words each. */
+  roles: string[];
   company: string;
   location: string;
   /** One short line. Keep it under ~12 words. */
   tagline: string;
   url: string;
+  /** Public contact address (forwards privately via Cloudflare Email Routing). */
+  email: string;
   socials: SocialLink[];
+};
+
+export type NavLink = {
+  label: string;
+  /** In-page anchor ("#work") or route ("/blog"). */
+  href: string;
+};
+
+export type Navigation = {
+  links: NavLink[];
+  cta: NavLink;
 };
 
 export type TechItem = {
