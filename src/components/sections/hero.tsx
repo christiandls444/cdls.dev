@@ -18,7 +18,7 @@ export function Hero() {
       </FadeIn>
 
       <FadeIn delay={0.08}>
-        <h1 className="font-serif text-6xl leading-[0.95] tracking-tight sm:text-8xl">
+        <h1 className="text-6xl leading-[0.95] font-light tracking-[-0.045em] sm:text-8xl">
           {first}
           <br />
           <span className="text-muted italic">{rest.join(" ")}</span>

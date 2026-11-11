@@ -21,7 +21,9 @@ Gold is an **accent**, never body text. Blue is for **links**. Everything else i
 
 ## Type
 
-- **Instrument Serif** (`font-serif`) for the name, section titles and card titles
+- **Geist Light** (`font-light` + tight tracking) for the name, titles, menu links and the About bio.
+  The hero name uses `tracking-[-0.045em]`, other large titles `tracking-[-0.04em]`, smaller ones `tracking-tight`.
+- The logo is Geist Medium.
 - **Geist** (`font-sans`) for UI and short copy
 - **Geist Mono** (`font-mono`) for labels, tags and metadata. Uppercase labels use `tracking-[0.2em]`.
 

@@ -9,7 +9,7 @@ export function Stack() {
       <div className="grid gap-12 sm:grid-cols-3 sm:gap-8">
         {stack.map((group, i) => (
           <FadeIn key={group.title} delay={i * 0.08}>
-            <h3 className="mb-5 font-serif text-2xl">{group.title}</h3>
+            <h3 className="mb-5 text-2xl font-light tracking-tight">{group.title}</h3>
             <ul className="grid grid-cols-4 gap-2 sm:grid-cols-3">
               {group.items.map((item) => (
                 <li key={item.name}>
