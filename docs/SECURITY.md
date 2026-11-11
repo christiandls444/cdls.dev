@@ -14,7 +14,24 @@
 - **Regression tests**: `tests/e2e/security.spec.ts` fails CI if a header is removed or weakened.
 - **Branch protection**: `main` and `develop` need a PR with a passing `check`, and force-push and deletion are blocked.
 
+### Domain and DNS
+
+- **Registrar lock** and **auto-renew** are on, so the domain can't be transferred away or lapse.
+- **WHOIS privacy** redacts the owner's personal details.
+- **DNSSEC** is enabled, so DNS answers for `cdls.dev` are signed against forgery.
+- Web records are **DNS only**. Vercel terminates TLS (Let's Encrypt, auto-renewed). TLS 1.0/1.1 are refused.
+- `www.cdls.dev` and `http://` both permanently redirect to `https://cdls.dev`.
+
+### Email (anti-spoofing)
+
+- **SPF**, **DKIM** and **DMARC `p=reject`** (strict alignment) are published. Mail that claims to be from
+  `@cdls.dev` but isn't is rejected by receiving servers, so the domain can't be used for phishing in the owner's name.
+- `hello@cdls.dev` forwards to a private inbox that is never published. The catch-all is disabled.
+- Any new service that sends as `@cdls.dev` must be added to SPF/DKIM first. See
+  [DEPLOYMENT.md → Email](./DEPLOYMENT.md#email-cloudflare--email-routing).
+
 Verify after deploy: `curl -sI https://cdls.dev` and check [securityheaders.com](https://securityheaders.com).
+Full DNS and email checks are in [DEPLOYMENT.md → Verify](./DEPLOYMENT.md#verify).
 
 ## Rules when adding features
 
@@ -29,9 +46,12 @@ Verify after deploy: `curl -sI https://cdls.dev` and check [securityheaders.com]
 
 ## Account hygiene (the most common real-world breach)
 
-- 2FA (authenticator app or passkey) on **GitHub, Vercel and Cloudflare**
-- GitHub branch protection on `main`: require PR + passing CI
-- Cloudflare: registrar lock on, and DNSSEC enabled
+- **2FA** (authenticator app or passkey, not SMS) on **GitHub, Vercel and Cloudflare**. Store the recovery codes
+  offline. These three accounts control the code, the deploys and the domain.
+- The **Vercel GitHub app** should only have access to this repository
+  (GitHub → Settings → Applications → Vercel → Configure → Only select repositories).
+- **Never** turn on the Cloudflare proxy for the Vercel records, disable Email Routing, or unlock the registrar
+  unless you are deliberately moving the domain.
 
 ## Dependency overrides
 
