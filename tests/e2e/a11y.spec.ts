@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { revealAll } from "./helpers";
 
 for (const scheme of ["light", "dark"] as const) {

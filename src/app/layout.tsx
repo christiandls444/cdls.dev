@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { IntroLoader } from "@/components/intro/intro-loader";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { site } from "@/content/site";
@@ -40,9 +41,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </noscript>
       </head>
       <body className="flex min-h-full flex-col font-sans">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <IntroLoader />
+        {/* Sibling of #intro on purpose: .page-rise waits for the curtain via CSS (~). */}
+        <div className="page-rise flex flex-1 flex-col">
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );
