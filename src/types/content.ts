@@ -64,6 +64,18 @@ export type About = {
   journey: JourneyItem[];
 };
 
+export type Post = {
+  /** URL segment: /blog/<slug>. Lowercase kebab-case. */
+  slug: string;
+  title: string;
+  /** ISO date, e.g. "2026-11-20". */
+  date: string;
+  /** One line, under ~20 words. Shown in the list and as the meta description. */
+  summary: string;
+  /** Loads the MDX body, e.g. () => import("./my-post.mdx"). */
+  load: () => Promise<{ default: React.ComponentType }>;
+};
+
 export type Project = {
   slug: string;
   title: string;

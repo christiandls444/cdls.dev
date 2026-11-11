@@ -20,6 +20,7 @@ Everything the site says lives in [`src/content/`](src/content):
 - `about.ts`: bio and journey
 - `stack.ts`: tech logos (shown in About)
 - `projects.ts`: work cards
+- `posts/`: blog posts (MDX) + `index.ts` registry
 
 ## Scripts
 

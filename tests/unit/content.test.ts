@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { about } from "@/content/about";
 import { navigation } from "@/content/navigation";
+import { posts } from "@/content/posts";
 import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import { stack } from "@/content/stack";
@@ -100,5 +101,20 @@ describe("about", () => {
       expect(j.role.trim()).not.toBe("");
       expect(j.period.trim()).not.toBe("");
     }
+  });
+});
+
+describe("blog posts", () => {
+  it("have unique kebab-case slugs", () => {
+    expect(unique(posts.map((p) => p.slug))).toBe(true);
+    for (const p of posts) expect(p.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+  });
+
+  it.each(posts)("$slug has valid metadata and loads its MDX", async (p) => {
+    expect(p.title.trim()).not.toBe("");
+    expect(p.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(Date.parse(p.date))).toBe(false);
+    expect(words(p.summary)).toBeLessThanOrEqual(20);
+    expect(typeof p.load).toBe("function");
   });
 });

@@ -10,6 +10,7 @@ export const navigation: Navigation = {
   links: [
     { label: "Work", href: "/#work" },
     { label: "About", href: "/#about" },
+    { label: "Blog", href: "/blog" },
   ],
   cta: { label: "Get in touch", href: `mailto:${site.email}` },
 };
