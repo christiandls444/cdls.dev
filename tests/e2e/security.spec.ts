@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("sends security headers on every page", async ({ request }) => {
-  for (const path of ["/", "/does-not-exist", "/robots.txt"]) {
+  for (const path of ["/", "/blog", "/does-not-exist", "/robots.txt"]) {
     const h = (await request.get(path)).headers();
     const csp = h["content-security-policy"] ?? "";
 
