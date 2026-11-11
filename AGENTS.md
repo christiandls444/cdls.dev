@@ -68,12 +68,45 @@ docs/                  ARCHITECTURE, DESIGN, SECURITY, DEPLOYMENT
 
 ```bash
 npm run dev          # local dev at http://localhost:3000
-npm run check        # lint + typecheck + format check (CI runs this + build)
+npm run check        # lint + typecheck + format check + unit tests
 npm run build        # production build; confirm routes are ○ Static
+npm run test:e2e     # Playwright against the build: smoke, security headers, a11y (run build first)
 npm run format       # prettier (sorts Tailwind classes too)
 ```
 
+## Tests
+
+| Layer            | Where                        | Guards                                                        |
+| ---------------- | ---------------------------- | ------------------------------------------------------------- |
+| Unit (Vitest)    | `tests/unit/`                | content rules: valid links, one-line summaries, unique slugs  |
+| E2E (Playwright) | `tests/e2e/home.spec.ts`     | page renders, no console errors, styles load, light/dark, 404 |
+| Security         | `tests/e2e/security.spec.ts` | security headers, `noopener` links, robots outside production |
+| Accessibility    | `tests/e2e/a11y.spec.ts`     | axe WCAG 2.1 A/AA in light and dark                           |
+
+Add a test with every feature. If you add a route, add it to the header test loop in `security.spec.ts`.
+
+## Git workflow
+
+| Branch                                 | Role                         | Deploys to                          |
+| -------------------------------------- | ---------------------------- | ----------------------------------- |
+| `main`                                 | production                   | `cdls.dev`                          |
+| `develop`                              | staging / integration        | `staging.cdls.dev` (Vercel preview) |
+| `feat/*`, `fix/*`, `chore/*`, `docs/*` | one change each, short-lived | unique Vercel preview URL           |
+
+1. Branch from `develop`: `git switch develop && git pull && git switch -c feat/<short-name>`.
+2. PR into **`develop`** → CI green → **squash merge**. Check it on staging.
+3. Release: PR **`develop` → `main`** → **merge commit** (never squash, or the branches diverge).
+4. Hotfix: `fix/*` from `main` → PR into `main`, then merge `main` back into `develop`.
+
+Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pass, no force-push or deletion.
+
+**Naming rules live in [CONTRIBUTING.md](CONTRIBUTING.md). Follow them exactly.** CI rejects anything else.
+
+- Branch: `<type>/<kebab-name>`, e.g. `feat/project-rag-chatbot`
+- Commit / PR title: `<type>(<scope>): <imperative, lowercase, no period>`, e.g. `feat(projects): add rag chatbot`
+  **Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
+
 ## Definition of done
 
-`npm run check` and `npm run build` pass. No new client components without a reason. No secrets in code.
+`npm run check`, `npm run build` and `npm run test:e2e` pass. No new client components without a reason. No secrets in code.
 Docs updated if you changed structure, tokens, headers or deployment.

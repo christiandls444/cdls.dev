@@ -11,8 +11,25 @@
 
 1. vercel.com → Add New Project → import the GitHub repo. The framework is auto-detected as Next.js and no
    settings are needed.
-2. Every push to `main` deploys to production, and every PR gets a preview URL.
-3. Env vars (when needed): Project → Settings → Environment Variables.
+2. Settings → Git → **Production Branch = `main`**.
+3. Env vars (when needed): Project → Settings → Environment Variables. Scope each var to Production and/or Preview.
+
+## Environments
+
+| Env        | Branch    | URL                      | Indexed | Who can see                        |
+| ---------- | --------- | ------------------------ | ------- | ---------------------------------- |
+| Production | `main`    | `cdls.dev`               | yes     | everyone                           |
+| Staging    | `develop` | `staging.cdls.dev`       | no      | you (Vercel Deployment Protection) |
+| Preview    | any PR    | `cdls-dev-git-<branch>…` | no      | you                                |
+
+- `robots.txt` blocks crawlers unless `VERCEL_ENV=production` (`src/app/robots.ts`).
+- Staging domain: Vercel → Settings → Domains → add `staging.cdls.dev` → **Git Branch: `develop`**, then add the
+  CNAME Vercel shows in Cloudflare (DNS only).
+- Keep **Deployment Protection → Vercel Authentication** on (the default) so previews and staging need your login.
+
+## Release flow
+
+`feat/*` → PR → `develop` (staging) → PR → `main` (production). See the Git workflow section in `AGENTS.md`.
 
 ## 3. Connect domain
 

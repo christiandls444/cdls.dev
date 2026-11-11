@@ -13,7 +13,7 @@ Defined once in `src/app/globals.css`. Light and dark follow the OS setting.
 | `fg`        | `#0A0A0A` | `#F5F5F0` | primary text                         |
 | `muted`     | `#6B6B66` | `#9A9A94` | secondary text, idle icons           |
 | `line`      | `#E7E5DF` | `#262624` | borders, dividers                    |
-| `gold`      | `#B08A1E` | `#D4AF37` | accent: labels, hover, focus, dots   |
+| `gold`      | `#8A6A12` | `#D4AF37` | accent: labels, hover, focus, dots   |
 | `gold-soft` | `#F5EDD6` | `#2A2410` | icon backgrounds, hover fills        |
 | `blue`      | `#1E3A8A` | `#7AA2F7` | links and link affordances (arrows)  |
 

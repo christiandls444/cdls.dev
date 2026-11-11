@@ -1,0 +1,48 @@
+name: PR conventions
+
+# Enforces CONTRIBUTING.md: conventional PR titles (they become the squash commit)
+# and <type>/<kebab-name> branch names. Plain bash, no third-party actions.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  conventions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check PR title and branch name
+        env:
+          # Passed via env (never inlined) so a crafted title cannot inject shell.
+          TITLE: ${{ github.event.pull_request.title }}
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          types='feat|fix|style|refactor|perf|test|docs|ci|build|chore|revert'
+          scopes='content|projects|stack|ui|layout|a11y|security|seo|config|tests|docs|readme|agents|ci|deps|deps-dev|release'
+          fail=0
+
+          title_re="^(${types})(\((${scopes})\))?!?: [a-z0-9].*[^.]$"
+          if [[ ! "$TITLE" =~ $title_re ]] || (( ${#TITLE} > 72 )); then
+            echo "::error title=PR title::'$TITLE' must look like 'feat(projects): add rag chatbot' (lowercase, no period, max 72 chars, known type/scope). See CONTRIBUTING.md."
+            fail=1
+          fi
+
+          branch_re="^(${types}|hotfix)/[a-z0-9]+(-[a-z0-9]+)*$"
+          if [[ "$HEAD" =~ $branch_re || "$HEAD" == dependabot/* ]]; then :
+          elif [[ "$HEAD" == "develop" && "$BASE" == "main" ]]; then :   # release
+          elif [[ "$HEAD" == "main" && "$BASE" == "develop" ]]; then :   # back-merge after hotfix
+          else
+            echo "::error title=Branch name::'$HEAD' must look like 'feat/project-rag-chatbot'. See CONTRIBUTING.md."
+            fail=1
+          fi
+
+          if [[ "$BASE" == "main" && "$HEAD" != "develop" && "$HEAD" != hotfix/* ]]; then
+            echo "::error title=Target branch::Only 'develop' (release) or 'hotfix/*' may target main."
+            fail=1
+          fi
+
+          exit $fail

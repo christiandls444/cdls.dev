@@ -8,7 +8,11 @@
   `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options: DENY`,
   `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`. `X-Powered-By` is disabled.
 - **External links** use `rel="noopener noreferrer"`.
-- **Dependencies**: Dependabot runs weekly, and CI runs lint, typecheck and build on every PR.
+- **Dependencies**: Dependabot runs weekly. CI fails on high-severity advisories in production deps
+  (`npm audit --omit=dev`), and dependency review blocks PRs that add vulnerable packages.
+- **Code scanning**: CodeQL (`security-extended`) runs on every PR, on pushes and weekly.
+- **Regression tests**: `tests/e2e/security.spec.ts` fails CI if a header is removed or weakened.
+- **Branch protection**: `main` and `develop` need a PR with a passing `check`, and force-push and deletion are blocked.
 
 Verify after deploy: `curl -sI https://cdls.dev` and check [securityheaders.com](https://securityheaders.com).
 
@@ -28,3 +32,12 @@ Verify after deploy: `curl -sI https://cdls.dev` and check [securityheaders.com]
 - 2FA (authenticator app or passkey) on **GitHub, Vercel and Cloudflare**
 - GitHub branch protection on `main`: require PR + passing CI
 - Cloudflare: registrar lock on, and DNSSEC enabled
+
+## Dependency overrides
+
+Temporary pins in `package.json` → `overrides`. Remove each one once the upstream package ships the fix
+(check with `npm ls <package>` after removing it).
+
+| Package     | Forced to | Why                                                                           | Remove when                                       |
+| ----------- | --------- | ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| `minimatch` | `^11.0.1` | GHSA-g3hv-75wg-m249 (ReDoS), pulled by `@typescript-eslint/typescript-estree` | `typescript-eslint` depends on minimatch ≥ 11.0.1 |

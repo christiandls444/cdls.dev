@@ -2,12 +2,30 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
+    target-branch: develop
+    commit-message: # -> "chore(deps): bump …" / "chore(deps-dev): bump …"
+      prefix: chore
+      prefix-development: chore
+      include: scope
     schedule:
       interval: weekly
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      # Majors that must move in lockstep with Next.js / the Vercel Node runtime.
+      # Upgrade these by hand when eslint-config-next and Vercel support them.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
+    commit-message: # -> "ci(deps): bump …"
+      prefix: ci
+      include: scope
     schedule:
       interval: monthly

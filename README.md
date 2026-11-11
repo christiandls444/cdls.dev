@@ -21,14 +21,16 @@ Everything the site says lives in [`src/content/`](src/content):
 
 ## Scripts
 
-| Command          | What                            |
-| ---------------- | ------------------------------- |
-| `npm run dev`    | dev server                      |
-| `npm run check`  | lint + typecheck + format check |
-| `npm run build`  | production build                |
-| `npm run format` | format code                     |
+| Command            | What                                   |
+| ------------------ | -------------------------------------- |
+| `npm run dev`      | dev server                             |
+| `npm run check`    | lint + typecheck + format + unit tests |
+| `npm run build`    | production build                       |
+| `npm run test:e2e` | browser tests (after build)            |
+| `npm run format`   | format code                            |
 
 ## Docs
 
 - [AGENTS.md](AGENTS.md): start here (humans and AI agents)
+- [CONTRIBUTING.md](CONTRIBUTING.md): branch names, commit messages, release flow
 - [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)

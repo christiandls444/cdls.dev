@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 
-/** Wordmark: initials + gold dot. */
+/**
+ * Wordmark: initials + gold dot.
+ * The accessible name starts with the visible text (WCAG 2.5.3), so no aria-label.
+ */
 export function Logo() {
   return (
-    <Link
-      href="/"
-      className="font-serif text-2xl leading-none tracking-tight text-fg"
-      aria-label={`${site.name}, home`}
-    >
+    <Link href="/" className="font-serif text-2xl leading-none tracking-tight text-fg">
       {site.shortName}
-      <span className="text-gold">.</span>
+      <span className="text-gold" aria-hidden>
+        .
+      </span>
+      <span className="sr-only">, {site.name}, home</span>
     </Link>
   );
 }
