@@ -104,7 +104,8 @@ Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pas
 
 - Branch: `<type>/<kebab-name>`, e.g. `feat/project-rag-chatbot`
 - Commit / PR title: `<type>(<scope>): <imperative, lowercase, no period>`, e.g. `feat(projects): add rag chatbot`
-  **Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
+- **Never delete branches** (local or remote) after merging, and never use `--delete-branch`.
+- **Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
 
 ## Definition of done
 

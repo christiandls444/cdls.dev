@@ -19,7 +19,9 @@ Same rules for every developer and every AI agent. CI rejects PRs that don't fol
 
 - Lowercase, numbers and hyphens only. 2 to 4 words.
 - Branch from `develop` (except `hotfix/*`, which branches from `main`).
-- One branch = one change. Delete after merge (GitHub does this automatically).
+- One branch = one change.
+- **Never delete branches after merge**, locally or on GitHub. Merged branches are kept as history
+  (auto-delete is off; don't pass `--delete-branch` to `gh pr merge`).
 
 ## Commit messages and PR titles
 
