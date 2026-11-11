@@ -25,8 +25,12 @@ jobs:
           scopes='content|projects|stack|ui|layout|a11y|security|seo|config|tests|docs|readme|agents|ci|deps|deps-dev|release'
           fail=0
 
-          title_re="^(${types})(\((${scopes})\))?!?: [a-z0-9].*[^.]$"
-          if [[ ! "$TITLE" =~ $title_re ]] || (( ${#TITLE} > 72 )); then
+          # Dependabot always writes "Bump …" (capitalized) and can exceed 72 chars; it has no option to change that.
+          first='[a-z0-9]'; max=72
+          if [[ "$HEAD" == dependabot/* ]]; then first='[A-Za-z0-9]'; max=120; fi
+
+          title_re="^(${types})(\((${scopes})\))?!?: ${first}.*[^.]$"
+          if [[ ! "$TITLE" =~ $title_re ]] || (( ${#TITLE} > max )); then
             echo "::error title=PR title::'$TITLE' must look like 'feat(projects): add rag chatbot' (lowercase, no period, max 72 chars, known type/scope). See CONTRIBUTING.md."
             fail=1
           fi
