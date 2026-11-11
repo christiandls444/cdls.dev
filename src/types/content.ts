@@ -19,7 +19,20 @@ export type SiteConfig = {
   /** One short line. Keep it under ~12 words. */
   tagline: string;
   url: string;
+  /** Public contact address (forwards privately via Cloudflare Email Routing). */
+  email: string;
   socials: SocialLink[];
+};
+
+export type NavLink = {
+  label: string;
+  /** In-page anchor ("#work") or route ("/blog"). */
+  href: string;
+};
+
+export type Navigation = {
+  links: NavLink[];
+  cta: NavLink;
 };
 
 export type TechItem = {

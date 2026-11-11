@@ -7,6 +7,8 @@ import type { SiteConfig } from "@/types/content";
  * Single source of truth for identity + links.
  * Socials with an empty href are hidden automatically.
  */
+const email = "hello@cdls.dev";
+
 export const site: SiteConfig = {
   name: "Christian De Los Santos",
   shortName: "CDLS",
@@ -15,12 +17,12 @@ export const site: SiteConfig = {
   location: "Philippines",
   tagline: "Building production AI systems, end to end.",
   url: "https://cdls.dev",
+  email,
   socials: [
     { label: "GitHub", href: "https://github.com/christiandls444", icon: brand(siGithub) },
     // TODO: add your LinkedIn profile URL
     { label: "LinkedIn", href: "", icon: brand(siLinkedinCustom) },
-    // TODO: add a public contact email, e.g. "mailto:hello@cdls.dev"
-    { label: "Email", href: "", icon: line(Mail) },
+    { label: "Email", href: `mailto:${email}`, icon: line(Mail) },
   ],
 };
 
