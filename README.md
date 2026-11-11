@@ -16,7 +16,8 @@ npm run dev        # http://localhost:3000
 Everything the site says lives in [`src/content/`](src/content):
 
 - `site.ts`: name, role, tagline, social links
-- `stack.ts`: tech logos
+- `about.ts`: bio and journey
+- `stack.ts`: tech logos (shown in About)
 - `projects.ts`: work cards
 
 ## Scripts

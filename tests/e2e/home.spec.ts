@@ -10,7 +10,7 @@ test("renders identity and sections without errors", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(site.name.split(" ")[0]);
   await expect(page.getByText(site.role).first()).toBeVisible();
-  await expect(page.locator("#stack")).toBeAttached();
+  await expect(page.locator("#about")).toBeAttached();
   await expect(page.locator("#work")).toBeAttached();
 
   expect(errors).toEqual([]);
