@@ -1,5 +1,5 @@
-import { site } from "./site";
 import type { Navigation } from "@/types/content";
+import { site } from "./site";
 
 /**
  * Menu links (opened from the ☰ button). Order = priority. Keep it to 3 links max.

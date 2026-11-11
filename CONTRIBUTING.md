@@ -1,6 +1,6 @@
 # Contributing
 
-Same rules for every developer and every AI agent. CI rejects PRs that don't follow them
+Same rules for every developer and every AI agent. Code patterns: [docs/CONVENTIONS.md](docs/CONVENTIONS.md). CI rejects PRs that don't follow them
 (`.github/workflows/pr-conventions.yml`).
 
 ## Branches

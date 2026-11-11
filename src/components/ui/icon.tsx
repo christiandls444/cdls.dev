@@ -1,5 +1,5 @@
-import type { Icon as IconData } from "@/types/content";
 import { cn } from "@/lib/utils";
+import type { Icon as IconData } from "@/types/content";
 
 type Props = {
   icon: IconData;

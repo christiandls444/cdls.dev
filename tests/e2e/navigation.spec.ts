@@ -1,6 +1,6 @@
-import { expect, test } from "./fixtures";
 import { navigation } from "@/content/navigation";
 import { site } from "@/content/site";
+import { expect, test } from "./fixtures";
 
 test("every home-section menu link has a matching section", async ({ page }) => {
   await page.goto("/");

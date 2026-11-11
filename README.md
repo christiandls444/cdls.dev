@@ -36,4 +36,4 @@ Everything the site says lives in [`src/content/`](src/content):
 
 - [AGENTS.md](AGENTS.md): start here (humans and AI agents)
 - [CONTRIBUTING.md](CONTRIBUTING.md): branch names, commit messages, release flow
-- [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)
+- [Conventions](docs/CONVENTIONS.md) · [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)

@@ -1,5 +1,5 @@
-import type { SimpleIcon } from "simple-icons";
 import type { LucideIcon } from "lucide-react";
+import type { SimpleIcon } from "simple-icons";
 
 /** An icon is either a brand logo (simple-icons) or a generic line icon (lucide). */
 export type Icon = { kind: "brand"; icon: SimpleIcon } | { kind: "lucide"; icon: LucideIcon };

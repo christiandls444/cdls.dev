@@ -1,5 +1,5 @@
-import { expect, test } from "./fixtures";
 import { site } from "@/content/site";
+import { expect, test } from "./fixtures";
 import { revealAll } from "./helpers";
 
 test("renders identity and sections without errors", async ({ page }) => {
