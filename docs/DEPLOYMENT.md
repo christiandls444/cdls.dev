@@ -1,48 +1,94 @@
 # Deployment
 
-**Domain:** Cloudflare Registrar · **Hosting:** Vercel · **Source:** GitHub `christiandls444/cdls.dev`
-
-## 1. Domain (Cloudflare)
-
-1. Buy `cdls.dev` in Cloudflare Dashboard → Domain Registration (at-cost price, no renewal markup).
-2. Turn on **DNSSEC** and **Registrar lock**.
-
-## 2. Hosting (Vercel)
-
-1. vercel.com → Add New Project → import the GitHub repo. The framework is auto-detected as Next.js and no
-   settings are needed.
-2. Settings → Git → **Production Branch = `main`**.
-3. Env vars (when needed): Project → Settings → Environment Variables. Scope each var to Production and/or Preview.
+| Piece   | Provider                           | Notes                                                |
+| ------- | ---------------------------------- | ---------------------------------------------------- |
+| Source  | GitHub `christiandls444/cdls.dev`  | `main` = production, `develop` = staging             |
+| Hosting | Vercel (Hobby), project `cdls-dev` | auto-deploys from GitHub, region `sin1` (Singapore)  |
+| Domain  | Cloudflare Registrar               | `cdls.dev`, registered 2026-11-11, auto-renew on     |
+| DNS     | Cloudflare (DNS only)              | records point to Vercel; Cloudflare proxy is **off** |
+| Email   | Cloudflare Email Routing           | receive-only forwarding, no mailbox                  |
 
 ## Environments
 
-| Env        | Branch    | URL                      | Indexed | Who can see                        |
-| ---------- | --------- | ------------------------ | ------- | ---------------------------------- |
-| Production | `main`    | `cdls.dev`               | yes     | everyone                           |
-| Staging    | `develop` | `staging.cdls.dev`       | no      | you (Vercel Deployment Protection) |
-| Preview    | any PR    | `cdls-dev-git-<branch>…` | no      | you                                |
+| Env        | Branch    | URL                              | Indexed | Who can see                          |
+| ---------- | --------- | -------------------------------- | ------- | ------------------------------------ |
+| Production | `main`    | `https://cdls.dev`               | yes     | everyone                             |
+| Staging    | `develop` | Vercel preview URL for `develop` | no      | owner (Vercel Deployment Protection) |
+| Preview    | any PR    | `cdls-dev-git-<branch>…`         | no      | owner                                |
 
 - `robots.txt` blocks crawlers unless `VERCEL_ENV=production` (`src/app/robots.ts`).
-- Staging domain: Vercel → Settings → Domains → add `staging.cdls.dev` → **Git Branch: `develop`**, then add the
-  CNAME Vercel shows in Cloudflare (DNS only).
-- Keep **Deployment Protection → Vercel Authentication** on (the default) so previews and staging need your login.
+- Keep **Deployment Protection → Vercel Authentication** on (the default) so previews need the owner's login.
+- Not set up yet: a fixed `staging.cdls.dev`. To add it: Vercel → Domains → add `staging.cdls.dev` →
+  **Git Branch: `develop`**, then add the CNAME Vercel shows in Cloudflare (DNS only).
 
 ## Release flow
 
-`feat/*` → PR → `develop` (staging) → PR → `main` (production). See the Git workflow section in `AGENTS.md`.
+`feat/*` → PR → `develop` → PR `chore(release): vX.Y.Z` → `main` (merge commit). Every merge to `main` deploys to
+production automatically. Full rules: [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-## 3. Connect domain
+## DNS records (Cloudflare → cdls.dev → DNS → Records)
 
-1. Vercel → Project → Settings → Domains → add `cdls.dev` and `www.cdls.dev` (redirect `www` → apex).
-2. In Cloudflare DNS, add the records Vercel shows (usually `A @ 76.76.21.21` and `CNAME www cname.vercel-dns.com`).
-3. Set both records to **DNS only (grey cloud)**. Vercel handles SSL and CDN, and proxying through Cloudflare
-   causes certificate/redirect issues.
+| Type  | Name                  | Content                                       | Proxy    | Purpose                                            |
+| ----- | --------------------- | --------------------------------------------- | -------- | -------------------------------------------------- |
+| CNAME | `@`                   | `d7034108f95bb2c1.vercel-dns-017.com`         | DNS only | site → Vercel (Cloudflare flattens it at the apex) |
+| CNAME | `www`                 | `d7034108f95bb2c1.vercel-dns-017.com`         | DNS only | `www` → Vercel, which 308-redirects to `cdls.dev`  |
+| MX    | `@`                   | `route1/2/3.mx.cloudflare.net` (57 / 73 / 97) | n/a      | Email Routing (managed, locked)                    |
+| TXT   | `@`                   | `v=spf1 include:_spf.mx.cloudflare.net ~all`  | n/a      | SPF (managed by Email Routing)                     |
+| TXT   | `cf2024-1._domainkey` | `v=DKIM1; …`                                  | n/a      | DKIM (managed, locked)                             |
+| TXT   | `_dmarc`              | `v=DMARC1; p=reject; adkim=s; aspf=s`         | n/a      | DMARC: reject spoofed `@cdls.dev` mail             |
 
-## 4. Verify
+**Keep the Vercel records on "DNS only" (grey cloud).** Vercel issues the TLS certificate and runs the CDN.
+Proxying through Cloudflare (orange cloud) breaks certificate renewal and causes redirect loops, so ignore
+Cloudflare's "proxying is recommended" banner for these two records.
 
-- `https://cdls.dev` loads and `http://` redirects to `https://`
-- `curl -sI https://cdls.dev` shows the security headers
-- `https://cdls.dev/sitemap.xml` and `/robots.txt` resolve
+If Vercel ever shows a different target (Project → Settings → Domains → View DNS configuration), update both
+CNAMEs to match.
+
+## Vercel domains (Project → Settings → Domains)
+
+| Domain                | Setting                            |
+| --------------------- | ---------------------------------- |
+| `cdls.dev`            | Connect to environment: Production |
+| `www.cdls.dev`        | Redirect: 308 → `cdls.dev`         |
+| `cdls-dev.vercel.app` | Production (default, keep)         |
+
+`cdls.dev` is the canonical URL (`site.url` in `src/content/site.ts`, used for metadata and the sitemap).
+
+## Email (Cloudflare → Email Routing)
+
+| Address          | Action                                                 |
+| ---------------- | ------------------------------------------------------ |
+| `hello@cdls.dev` | Forward to the owner's private inbox                   |
+| Catch-all        | **Disabled** (random addresses are dropped, less spam) |
+
+- The destination inbox is never published. Only `hello@cdls.dev` appears on the site.
+- **Receive-only.** Nothing is configured to _send_ as `@cdls.dev`. Because DMARC is `p=reject`, any service added
+  later to send as `@cdls.dev` (e.g. Resend for a contact form, or Gmail "Send mail as") must be added to SPF and
+  set up with DKIM **before** it sends, or its mail will be rejected.
+- Do not click **Disable** in Email Routing → Settings. It deletes the MX, SPF and DKIM records.
+
+## Domain settings (Cloudflare → Domain Registration → cdls.dev)
+
+| Setting        | State                                                      |
+| -------------- | ---------------------------------------------------------- |
+| Auto-renew     | on (the domain expires 2027-11-11 if renewal fails)        |
+| Registrar lock | on (transfers are also blocked for 60 days after purchase) |
+| WHOIS privacy  | on (redacted)                                              |
+| DNSSEC         | enabled                                                    |
+
+## Verify
+
+```bash
+curl -sI https://cdls.dev                    # 200 + security headers
+curl -sI https://www.cdls.dev | head -3      # 308 → https://cdls.dev/
+curl -s  https://cdls.dev/robots.txt         # Allow + sitemap in production
+dig +short MX cdls.dev                       # three route*.mx.cloudflare.net
+dig +short TXT _dmarc.cdls.dev               # v=DMARC1; p=reject; …
+dig +short DS cdls.dev                       # non-empty once DNSSEC is active
+```
+
+Also check [securityheaders.com](https://securityheaders.com/?q=cdls.dev) and send a test mail to
+`hello@cdls.dev` from an outside account.
 
 ## Local
 
