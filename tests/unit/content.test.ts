@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { about } from "@/content/about";
 import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import { stack } from "@/content/stack";
@@ -50,5 +51,21 @@ describe("stack", () => {
   it("has non-empty groups with unique item names", () => {
     for (const g of stack) expect(g.items.length).toBeGreaterThan(0);
     expect(unique(stack.flatMap((g) => g.items.map((i) => i.name)))).toBe(true);
+  });
+});
+
+describe("about", () => {
+  it("keeps the bio to two short lines", () => {
+    expect(words(about.bio)).toBeLessThanOrEqual(25);
+  });
+
+  it("has a journey with unique orgs and filled fields", () => {
+    expect(about.journey.length).toBeGreaterThan(0);
+    expect(unique(about.journey.map((j) => j.org))).toBe(true);
+    for (const j of about.journey) {
+      expect(j.org.trim()).not.toBe("");
+      expect(j.role.trim()).not.toBe("");
+      expect(j.period.trim()).not.toBe("");
+    }
   });
 });

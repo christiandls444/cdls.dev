@@ -2,8 +2,8 @@ import { Logo } from "@/components/ui/logo";
 import { SocialLinks } from "@/components/ui/social-links";
 
 const nav = [
-  { label: "Stack", href: "#stack" },
   { label: "Work", href: "#work" },
+  { label: "About", href: "#about" },
 ];
 
 export function SiteHeader() {

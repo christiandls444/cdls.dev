@@ -32,6 +32,20 @@ export type TechGroup = {
   items: TechItem[];
 };
 
+export type JourneyItem = {
+  org: string;
+  role: string;
+  /** Short and human, e.g. "2024 — Now" or "In progress". */
+  period: string;
+  icon: Icon;
+};
+
+export type About = {
+  /** Two short lines max. */
+  bio: string;
+  journey: JourneyItem[];
+};
+
 export type Project = {
   slug: string;
   title: string;
