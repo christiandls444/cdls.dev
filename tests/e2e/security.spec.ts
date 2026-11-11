@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test("sends security headers on every page", async ({ request }) => {
   for (const path of ["/", "/blog", "/does-not-exist", "/robots.txt"]) {

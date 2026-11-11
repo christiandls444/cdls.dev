@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { sortedPosts } from "@/content/posts";
 
 test("blog index renders, with posts or the empty state", async ({ page }) => {
