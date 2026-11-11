@@ -40,7 +40,7 @@ function ProjectCard({ project }: { project: Project }) {
           />
         )}
       </div>
-      <h3 className="font-serif text-2xl">{project.title}</h3>
+      <h3 className="text-2xl font-light tracking-tight">{project.title}</h3>
       <p className="mt-2 text-sm text-muted">{project.summary}</p>
       <ul className="mt-6 flex flex-wrap gap-1.5" aria-label="Tags">
         {project.tags.map((tag) => (
