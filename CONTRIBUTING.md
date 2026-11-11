@@ -41,6 +41,7 @@ docs(readme): add deploy badge
 - Breaking change: add `!`, e.g. `feat(content)!: rename project fields`.
 - PRs are **squash merged**, so the **PR title becomes the commit** on `develop`. Get the title right.
   Commits inside your branch can be rough. Only the PR title is checked.
+- Dependabot PRs are exempt from the lowercase and 72-character rules (it always writes `Bump …`).
 
 ### Types
 
