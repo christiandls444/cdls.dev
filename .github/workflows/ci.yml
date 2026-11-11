@@ -15,8 +15,8 @@ concurrency:
 jobs:
   # Required status check on main and develop. Keep the job name "check".
   check:
-    # Pinned: ubuntu-latest moved to Ubuntu 26, where Playwright's apt deps time out.
-    # Bump once Playwright supports 26 (check `npx playwright install --with-deps`).
+    # Pinned: ubuntu-latest moved to Ubuntu 26 mid-rollout; 24.04 is the image Playwright
+    # officially supports. Bump deliberately once 26 is verified.
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -37,14 +37,12 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # No --with-deps: that runs apt, and Ubuntu's apt mirrors are unreachable from the
+      # runners at times. The runner image already ships Chrome's system libraries.
       - name: Install Playwright browser
         if: steps.pw-cache.outputs.cache-hit != 'true'
         timeout-minutes: 5
-        run: npx playwright install --with-deps chromium
-      - name: Install Playwright system deps (browser cached)
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        timeout-minutes: 5
-        run: npx playwright install-deps chromium
+        run: npx playwright install chromium
       - name: E2E (smoke, security headers, accessibility)
         run: npm run test:e2e
       - uses: actions/upload-artifact@v7
