@@ -1,5 +1,5 @@
-import { expect, test } from "./fixtures";
 import { sortedPosts } from "@/content/posts";
+import { expect, test } from "./fixtures";
 
 test("blog index renders, with posts or the empty state", async ({ page }) => {
   const res = await page.goto("/blog");

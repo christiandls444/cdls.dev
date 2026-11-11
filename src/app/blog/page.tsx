@@ -1,6 +1,6 @@
+import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { sortedPosts } from "@/content/posts";
 import { formatDate } from "@/lib/format";

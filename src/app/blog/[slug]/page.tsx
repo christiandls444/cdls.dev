@@ -1,7 +1,7 @@
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { getPost, posts } from "@/content/posts";
 import { formatDate } from "@/lib/format";
 

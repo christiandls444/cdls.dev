@@ -60,13 +60,10 @@ docs/                  ARCHITECTURE, DESIGN, SECURITY, DEPLOYMENT
 
 ## Conventions
 
-- **Server Components by default.** Add `"use client"` only for interactivity/animation, and keep those components small (see `ui/fade-in.tsx`).
-- Files `kebab-case.tsx`, components `PascalCase`, named exports (except Next route files, which use default exports).
-- Imports use the `@/` alias.
-- Styling: Tailwind utility classes with tokens (`bg-bg`, `text-fg`, `text-muted`, `border-line`, `text-gold`, `bg-gold-soft`, `text-blue`, `bg-surface`). Merge conditional classes with `cn()`.
-- Icons go through `<Icon>`. Decorative icons are `aria-hidden`; icon-only links need `aria-label`.
-- Content is typed data, not JSX. Components read from `content/`, and content never imports components.
-- Do not use `new Date()`, `Math.random()` or request APIs in server components without `"use cache"` or `<Suspense>`, because Cache Components will fail the build. Read `node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md`.
+**Follow [docs/CONVENTIONS.md](docs/CONVENTIONS.md).** It covers layers, file anatomy, server vs client,
+styling, content and tests, and most of it is enforced by ESLint and `tests/unit/standards.test.ts`.
+Key points: server components by default, tokens only for colors, content as typed data, `@/` imports,
+named exports, a test with every feature.
 
 ## Commands
 
@@ -113,5 +110,6 @@ Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pas
 
 ## Definition of done
 
-`npm run check`, `npm run build` and `npm run test:e2e` pass. No new client components without a reason. No secrets in code.
+`npm run check`, `npm run build` and `npm run test:e2e` pass. `/code-review` has run on the diff and its
+findings are fixed. No new client components or colors outside the allowlists. No secrets in code.
 Docs updated if you changed structure, tokens, headers or deployment.
