@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 import { SocialLinks } from "@/components/ui/social-links";
 import { navigation } from "@/content/navigation";
@@ -33,7 +34,10 @@ export function SiteHeader() {
               ))}
             </ul>
           </nav>
-          <SocialLinks className="mt-12 -ml-2" />
+          <div className="mt-12 -ml-2 flex items-center gap-1">
+            <SocialLinks />
+            <ThemeToggle />
+          </div>
         </MenuDialog>
       </div>
     </header>

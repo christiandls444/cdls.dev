@@ -1,10 +1,14 @@
 import AxeBuilder from "@axe-core/playwright";
+import { THEME_KEY } from "@/lib/theme";
 import { expect, test } from "./fixtures";
 import { revealAll } from "./helpers";
 
-for (const scheme of ["light", "dark"] as const) {
-  test(`has no WCAG A/AA violations (${scheme})`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: scheme });
+for (const theme of ["light", "dark"] as const) {
+  test(`has no WCAG A/AA violations (${theme})`, async ({ page }) => {
+    await page.addInitScript(
+      ([key, value]) => localStorage.setItem(key, value),
+      [THEME_KEY, theme],
+    );
     await page.goto("/");
     await revealAll(page);
 
