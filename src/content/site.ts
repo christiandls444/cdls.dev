@@ -14,8 +14,8 @@ export const site: SiteConfig = {
   shortName: "CDLS",
   role: "Full Stack LLM Engineer",
   badges: [
-    { role: "Full Stack LLM Development Analyst", org: "Accenture" },
-    { role: "MS Computer Science", org: "Mapúa" },
+    { role: "LLM Engineer", org: "Accenture" },
+    { role: "MS CS", org: "Mapúa" },
   ],
   roles: [
     "Researcher",
@@ -25,6 +25,10 @@ export const site: SiteConfig = {
     "UI/UX Designer",
     "ML Engineer",
     "Prompt Engineer",
+    "Minimalist",
+    "Aesthetic",
+    "Handsome",
+    "Creative",
   ],
   company: "Accenture",
   location: "Philippines",
