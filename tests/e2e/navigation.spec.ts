@@ -77,34 +77,47 @@ test("header scrolls away with the page (not sticky)", async ({ page }) => {
   expect(box && box.y + box.height).toBeLessThanOrEqual(0);
 });
 
-test.describe("hero name roles", () => {
-  test.skip(({ isMobile }) => isMobile, "hover is desktop only (touch uses tap)");
+test("a large role line fills the open top of the hero and cycles through the roles", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const main = page.getByRole("main");
+  const label = main.locator(".role-ticker");
+  const h1 = main.getByRole("heading", { level: 1 });
 
-  test("hovering the name shows a role pill; the name never changes", async ({ page }) => {
-    await page.goto("/");
-    const h1 = page.getByRole("heading", { level: 1 });
-    const pill = page.locator(".role-pill");
-    await expect(pill).toHaveAttribute("data-open", "false");
+  // Always visible (phones too), decorative, above the badges, right-aligned with the
+  // menu icon, and about half the size of the name.
+  const text = async () => (await label.innerText()).trim();
+  await expect(label).toBeVisible();
+  await expect(label).toHaveAttribute("aria-hidden", "true");
+  await expect.poll(async () => site.roles.includes(await text())).toBe(true);
+  const l = (await label.boundingBox())!;
+  const badges = (await main.locator("ul").first().boundingBox())!;
+  expect(l.y + l.height).toBeLessThanOrEqual(badges.y);
+  const lastLetter = (await label.locator("span").last().boundingBox())!;
+  const menu = (await page
+    .getByRole("button", { name: "Open menu" })
+    .locator("svg")
+    .boundingBox())!;
+  expect(Math.abs(lastLetter.x + lastLetter.width - (menu.x + menu.width))).toBeLessThanOrEqual(4);
+  const size = (el: typeof label) => el.evaluate((n) => parseFloat(getComputedStyle(n).fontSize));
+  expect((await size(label)) / (await size(h1))).toBeCloseTo(0.5, 1);
 
-    await h1.hover();
-    await expect(pill).toHaveAttribute("data-open", "true");
-    await expect
-      .poll(async () => site.roles.includes((await pill.innerText()).trim()), { timeout: 3000 })
-      .toBe(true);
-    await expect(h1).toHaveText(site.name);
-
-    await page.mouse.move(5, 5);
-    await expect(pill).toHaveAttribute("data-open", "false");
-  });
+  // Cycles (fades out, writes in letter by letter): only roles from content.
+  const first = await text();
+  await expect.poll(text, { timeout: 7000 }).not.toBe(first);
+  expect(site.roles).toContain(await text());
+  await expect(h1).toHaveAccessibleName(site.name);
 });
 
-test("tapping the name toggles the role pill on touch", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "touch only");
-  await page.goto("/");
-  const h1 = page.getByRole("heading", { level: 1 });
-  const pill = page.locator(".role-pill");
-  await h1.tap();
-  await expect(pill).toHaveAttribute("data-open", "true");
-  await h1.tap();
-  await expect(pill).toHaveAttribute("data-open", "false");
+test("the role line opens on a random role on every load", async ({ page }) => {
+  const label = page.getByRole("main").locator(".role-ticker");
+  const firsts = new Set<string>();
+  for (let i = 0; i < 6; i++) {
+    await (i === 0 ? page.goto("/") : page.reload());
+    await expect.poll(async () => site.roles.includes((await label.innerText()).trim())).toBe(true);
+    firsts.add((await label.innerText()).trim());
+  }
+  // 6 loads over 10 roles all opening on the same one: ~1 in 100,000.
+  expect(firsts.size).toBeGreaterThan(1);
 });
