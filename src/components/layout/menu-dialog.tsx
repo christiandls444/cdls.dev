@@ -14,6 +14,9 @@ const OPENING = new Set(["menu-item-in", "menu-icon-to-x"]);
  * the header scrolls away, the × never moves, and at the top of the page they line up.
  */
 function openMenu(dialog: HTMLDialogElement, closeButton: HTMLElement) {
+  // Classic scrollbars (Windows, Linux): the page keeps its gutter (globals.css) but the
+  // dialog spans the full width, so pad it by the scrollbar to line × up with ☰.
+  dialog.style.paddingRight = `${innerWidth - document.documentElement.clientWidth}px`;
   dialog.showModal();
   // showModal focuses the first link (the logo) and Safari rings it. Focus the menu
   // itself instead (tabIndex -1, no outline); Tab still moves through the links.
