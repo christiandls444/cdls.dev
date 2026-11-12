@@ -15,7 +15,7 @@ via the sun/moon toggle in the menu (next to the social icons) and is remembered
 | `muted`     | `#6B6B66` | `#9A9A94` | secondary text, idle icons           |
 | `line`      | `#E7E5DF` | `#262624` | borders, dividers                    |
 | `gold`      | `#8A6A12` | `#D4AF37` | accent: labels, hover, focus, dots   |
-| `gold-soft` | `#F5EDD6` | `#2A2410` | icon backgrounds, hover fills        |
+| `gold-soft` | `#F5EDD6` | `#2A2410` | icon backgrounds                     |
 | `blue`      | `#1E3A8A` | `#7AA2F7` | links and link affordances (arrows)  |
 
 Gold is an **accent**, never body text. Blue is for **links**. Everything else is black/white/grey.
@@ -32,7 +32,7 @@ Gold is an **accent**, never body text. Blue is for **links**. Everything else i
 
 - One line per summary. If it needs a paragraph, it needs a detail page.
 - Every item gets an icon: a brand logo (simple-icons) or a lucide line icon at `strokeWidth={1.5}`.
-- Icons are monochrome (`currentColor`). Hover turns them gold. No multicolor brand logos.
+- Icons are monochrome (`currentColor`). Hover turns them gold (no hover fill/circle). No multicolor brand logos.
 - Layout: `max-w-5xl`, `px-6`, sections `py-20 sm:py-28`, cards `rounded-2xl`, tiles `rounded-xl`.
 - Motion: only `FadeIn` (fade + 12px rise, once). It respects reduced motion. No bouncing, no parallax.
 - Accessibility: visible gold focus ring, `aria-label` on icon-only links, colour contrast AA.
