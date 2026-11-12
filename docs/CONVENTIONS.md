@@ -82,7 +82,8 @@ Pattern: the client component owns state only. Pass server-rendered markup in as
   `border-line`, `text-gold`, `bg-gold-soft`, `text-blue`. Never `text-blue-500`, `bg-white` or `#hex`.
   Tokens and their light/dark values live in `src/app/globals.css` ([DESIGN.md](./DESIGN.md)).
 - Conditional classes go through `cn()` from `@/lib/utils`.
-- Animations: CSS when it must work before JavaScript (hero, intro); `FadeIn` for scroll reveals.
+- Animations: CSS when it must work before React loads (hero, intro; the intro's letter flight is a
+  self-contained inline script, `components/intro/intro-script.ts`); `FadeIn` for scroll reveals.
   Always respect `prefers-reduced-motion`.
 - Custom CSS goes in `globals.css` under a comment naming the component it belongs to.
 

@@ -11,7 +11,7 @@ const email = "hello@cdls.dev";
 
 export const site: SiteConfig = {
   name: "Christian M. De Los Santos",
-  shortName: "CDLS",
+  shortName: "CMDLS",
   role: "Full Stack LLM Engineer",
   badges: [
     { role: "LLM Engineer", org: "Accenture" },
