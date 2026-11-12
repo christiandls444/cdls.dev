@@ -4,7 +4,8 @@
 
 ## Palette
 
-Defined once in `src/app/globals.css`. Light and dark follow the OS setting.
+Defined once in `src/app/globals.css`. **Dark is the default** for every visitor; light is opt-in
+via the sun/moon toggle in the menu (next to the social icons) and is remembered in `localStorage`.
 
 | Token       | Light     | Dark      | Use                                  |
 | ----------- | --------- | --------- | ------------------------------------ |

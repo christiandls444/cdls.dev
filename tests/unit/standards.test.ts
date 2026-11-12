@@ -34,6 +34,7 @@ const CLIENT_COMPONENTS: Record<string, string> = {
   "src/components/ui/fade-in.tsx": "scroll-triggered fade (motion)",
   "src/components/layout/menu-dialog.tsx": "opens/closes the menu dialog",
   "src/components/sections/role-ticker.tsx": "cycles the hero role line",
+  "src/components/theme/theme-toggle.tsx": "switches dark/light and remembers it",
 };
 
 /** Next.js file conventions that must use a default export. */

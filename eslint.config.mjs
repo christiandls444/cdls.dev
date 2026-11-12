@@ -32,7 +32,13 @@ const layers = [
   },
   {
     files: ["src/components/ui/**", "src/mdx-components.tsx"],
-    forbid: deny("components/sections", "components/layout", "components/intro", "app"),
+    forbid: deny(
+      "components/sections",
+      "components/layout",
+      "components/intro",
+      "components/theme",
+      "app",
+    ),
     why: "ui/ primitives are the bottom of the component tree.",
     // ui/ may read site identity only (logo, social links): a separate pattern so the
     // "!" exception works (gitignore can't re-include a file under an excluded folder).
@@ -46,13 +52,13 @@ const layers = [
   },
   {
     files: ["src/components/sections/**"],
-    forbid: deny("components/layout", "components/intro", "app"),
-    why: "sections/ may use ui/ only, never layout/, intro/ or routes.",
+    forbid: deny("components/layout", "components/intro", "components/theme", "app"),
+    why: "sections/ may use ui/ only, never layout/, intro/, theme/ or routes.",
   },
   {
-    files: ["src/components/layout/**", "src/components/intro/**"],
+    files: ["src/components/layout/**", "src/components/intro/**", "src/components/theme/**"],
     forbid: deny("components/sections", "app"),
-    why: "layout/ and intro/ wrap pages; they must not depend on page sections.",
+    why: "layout/, intro/ and theme/ wrap pages; they must not depend on page sections.",
   },
 ];
 

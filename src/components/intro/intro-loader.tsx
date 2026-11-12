@@ -1,6 +1,6 @@
+import { InlineScript } from "@/components/ui/inline-script";
 import { site } from "@/content/site";
 import { INTRO_KEY } from "@/lib/intro";
-import { InlineScript } from "./inline-script";
 import { introScript } from "./intro-script";
 
 /**
