@@ -14,9 +14,11 @@ const OPENING = new Set(["menu-item-in", "menu-icon-to-x"]);
  * the header scrolls away, the × never moves, and at the top of the page they line up.
  */
 function openMenu(dialog: HTMLDialogElement, closeButton: HTMLElement) {
-  // Classic scrollbars (Windows, Linux): the page keeps its gutter (globals.css) but the
-  // dialog spans the full width, so pad it by the scrollbar to line × up with ☰.
-  dialog.style.paddingRight = `${innerWidth - document.documentElement.clientWidth}px`;
+  // Classic scrollbars (Windows, Linux): opening hides the page's scrollbar. Pad the page
+  // and the full-width dialog by its width, so nothing shifts and × lands on ☰.
+  const scrollbar = `${innerWidth - document.documentElement.clientWidth}px`;
+  document.documentElement.style.setProperty("--menu-scrollbar", scrollbar);
+  dialog.style.paddingRight = scrollbar;
   dialog.showModal();
   // showModal focuses the first link (the logo) and Safari rings it. Focus the menu
   // itself instead (tabIndex -1, no outline); Tab still moves through the links.
@@ -147,6 +149,7 @@ export function MenuDialog({ children }: { children: React.ReactNode }) {
     // However it closed, reset for the next open (display: none restarts the CSS ones).
     const onClose = () => {
       delete dialog.dataset.closing;
+      document.documentElement.style.removeProperty("--menu-scrollbar");
       dialog.getAnimations({ subtree: true }).forEach((a) => a.cancel());
     };
     dialog.addEventListener("click", onClick);

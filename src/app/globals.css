@@ -85,7 +85,8 @@ body {
 /* Full-screen menu (components/layout/menu-dialog.tsx) */
 html:has(dialog.menu-dialog[open]) {
   overflow: hidden; /* no page scroll behind the menu */
-  scrollbar-gutter: stable; /* classic scrollbars: no sideways jump, × stays on the ☰ */
+  /* The scrollbar it hides (classic scrollbars only; 0 otherwise), so nothing shifts. */
+  padding-right: var(--menu-scrollbar, 0px);
 }
 
 /*
