@@ -15,9 +15,12 @@ npm run dev        # http://localhost:3000
 
 Everything the site says lives in [`src/content/`](src/content):
 
-- `site.ts`: name, role, tagline, social links
-- `stack.ts`: tech logos
+- `site.ts`: name, role, email, badges, hover roles, social links
+- `navigation.ts`: menu links
+- `about.ts`: bio and journey
+- `stack.ts`: tech logos (shown in About)
 - `projects.ts`: work cards
+- `posts/`: blog posts (MDX) + `index.ts` registry
 
 ## Scripts
 
@@ -33,4 +36,4 @@ Everything the site says lives in [`src/content/`](src/content):
 
 - [AGENTS.md](AGENTS.md): start here (humans and AI agents)
 - [CONTRIBUTING.md](CONTRIBUTING.md): branch names, commit messages, release flow
-- [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)
+- [Conventions](docs/CONVENTIONS.md) · [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)

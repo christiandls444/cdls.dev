@@ -1,46 +1,121 @@
-import { MapPin } from "lucide-react";
-import { siAccenture } from "simple-icons";
-import { FadeIn } from "@/components/ui/fade-in";
-import { Icon } from "@/components/ui/icon";
-import { brand } from "@/lib/icons";
+import { navigation } from "@/content/navigation";
 import { site } from "@/content/site";
+import { cn } from "@/lib/utils";
+import { HeroBackground } from "./hero-background";
+import { HeroName } from "./hero-name";
+import { RoleTicker } from "./role-ticker";
 
+/**
+ * Full-height hero, content anchored bottom-left: badge, name, two actions,
+ * and one short line bottom-right. The empty top area is reserved for a
+ * background visual later.
+ */
 export function Hero() {
-  const [first, ...rest] = site.name.split(" ");
+  // "Christian M. De Los Santos" → ["Christian M.", "De Los Santos"]
+  const words = site.name.split(" ");
+  const lines: [string, string] = [words.slice(0, 2).join(" "), words.slice(2).join(" ")];
+  const work = navigation.links.find((l) => l.href.endsWith("#work"));
 
   return (
-    <section className="relative mx-auto flex w-full max-w-5xl flex-col justify-center px-6 pt-28 pb-20 sm:min-h-[78vh] sm:pt-20">
-      <FadeIn>
-        <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">
-          <span className="size-1.5 animate-pulse rounded-full bg-gold" aria-hidden />
-          {site.role}
-        </p>
-      </FadeIn>
+    <section className="relative isolate">
+      <HeroBackground />
+      <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-5xl flex-col justify-end px-6 pt-16 pb-12 sm:min-h-[calc(100dvh-4rem)] sm:pt-24 sm:pb-16">
+        {/* The open top area: one large role line, right-aligned with the menu icon
+            (pr-1 matches the icon's inner padding, so the visible edges line up). */}
+        <div className="flex flex-1 items-center pb-10">
+          <HeroIn delay={320} className="w-full pr-1 text-right">
+            <RoleTicker
+              roles={site.roles}
+              className="text-[clamp(1.5rem,5vw,4.25rem)] leading-[1.2] font-light tracking-[-0.035em] text-muted"
+            />
+          </HeroIn>
+        </div>
 
-      <FadeIn delay={0.08}>
-        <h1 className="font-serif text-6xl leading-[0.95] tracking-tight sm:text-8xl">
-          {first}
-          <br />
-          <span className="text-muted italic">{rest.join(" ")}</span>
-        </h1>
-      </FadeIn>
+        <HeroIn delay={0}>
+          <ul className="flex flex-col gap-2 font-mono text-xs text-muted">
+            {site.badges.map((b) => (
+              <li key={b.org} className="leading-5">
+                {b.role} <span className="whitespace-nowrap">· {b.org}</span>
+              </li>
+            ))}
+          </ul>
+        </HeroIn>
 
-      <FadeIn delay={0.16}>
-        <p className="mt-8 max-w-md text-lg text-muted">{site.tagline}</p>
-      </FadeIn>
+        {/* hero-in--name: holds still during the intro so the loader letters land on it. */}
+        <HeroIn delay={80} className="hero-in--name">
+          <HeroName
+            lines={lines}
+            className="mt-5 text-[clamp(3rem,10vw,8.5rem)] leading-[0.92] font-light tracking-[-0.045em] text-fg"
+          />
+        </HeroIn>
 
-      <FadeIn delay={0.24}>
-        <ul className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-          <li className="flex items-center gap-2 text-fg">
-            <Icon icon={brand(siAccenture)} className="size-4 text-gold" />
-            {site.company}
-          </li>
-          <li className="flex items-center gap-2 text-muted">
-            <MapPin className="size-4" strokeWidth={1.5} aria-hidden />
-            {site.location}
-          </li>
-        </ul>
-      </FadeIn>
+        <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <HeroIn delay={160} className="flex flex-wrap gap-3">
+            <PillLink href={navigation.cta.href} variant="solid">
+              {navigation.cta.label}
+            </PillLink>
+            {work && (
+              <PillLink href={work.href} variant="outline">
+                View work
+              </PillLink>
+            )}
+          </HeroIn>
+
+          <HeroIn delay={240}>
+            <p className="max-w-xs text-sm leading-relaxed text-balance text-muted sm:text-right">
+              {site.tagline}
+            </p>
+          </HeroIn>
+        </div>
+      </div>
     </section>
+  );
+}
+
+function PillLink({
+  href,
+  variant,
+  children,
+}: {
+  href: string;
+  variant: "solid" | "outline";
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      className={cn(
+        "inline-flex h-11 items-center rounded-full px-6 text-sm transition-colors",
+        variant === "solid"
+          ? "bg-gold text-bg hover:bg-blue"
+          : "border border-line text-fg hover:border-gold hover:text-gold",
+      )}
+    >
+      {children}
+    </a>
+  );
+}
+
+/**
+ * Hero reveal in pure CSS (`.hero-in` in globals.css): it starts at first paint, so
+ * the name shows even before (or without) JavaScript. With the intro it waits for
+ * the intro's exit (morph or curtain) via a CSS sibling selector.
+ */
+function HeroIn({
+  delay,
+  className,
+  children,
+}: {
+  delay: number;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn("hero-in", className)}
+      style={{ "--d": `${delay}ms` } as React.CSSProperties}
+    >
+      {children}
+    </div>
   );
 }

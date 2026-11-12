@@ -1,5 +1,5 @@
-import type { SimpleIcon } from "simple-icons";
 import type { LucideIcon } from "lucide-react";
+import type { SimpleIcon } from "simple-icons";
 import type { Icon } from "@/types/content";
 
 export const brand = (icon: SimpleIcon): Icon => ({ kind: "brand", icon });

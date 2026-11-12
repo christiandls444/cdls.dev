@@ -1,3 +1,4 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -39,6 +40,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Dev only: let phones/laptops on the local network load dev assets (http://192.168.x.x:3000).
+  allowedDevOrigins: ["192.168.*.*"],
   turbopack: {
     rules: {
       "*.css": {
@@ -52,4 +55,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+/**
+ * MDX for blog posts. Posts are imported from src/content/posts (not routed as pages),
+ * so pageExtensions stays at the default.
+ */
+const withMDX = createMDX({});
+
+export default withMDX(nextConfig);

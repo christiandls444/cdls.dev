@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { about } from "@/content/about";
+import { navigation } from "@/content/navigation";
+import { posts } from "@/content/posts";
 import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import { stack } from "@/content/stack";
@@ -12,6 +15,29 @@ describe("site", () => {
   it("has a canonical https url without trailing slash", () => {
     expect(isHttps(site.url)).toBe(true);
     expect(site.url.endsWith("/")).toBe(false);
+  });
+
+  it("shortName is the initials of the name (the intro letters land on them)", () => {
+    const initials = site.name
+      .split(" ")
+      .map((w) => w[0])
+      .join("");
+    expect(site.shortName).toBe(initials);
+  });
+
+  it("has 1-2 hero badges with role and place filled in", () => {
+    expect(site.badges.length).toBeGreaterThanOrEqual(1);
+    expect(site.badges.length).toBeLessThanOrEqual(2);
+    for (const b of site.badges) {
+      expect(b.role.trim()).not.toBe("");
+      expect(b.org.trim()).not.toBe("");
+    }
+  });
+
+  it("has unique, short hover roles", () => {
+    expect(site.roles.length).toBeGreaterThanOrEqual(1);
+    expect(unique(site.roles)).toBe(true);
+    for (const r of site.roles) expect(words(r)).toBeLessThanOrEqual(3);
   });
 
   it("keeps the tagline short", () => {
@@ -50,5 +76,53 @@ describe("stack", () => {
   it("has non-empty groups with unique item names", () => {
     for (const g of stack) expect(g.items.length).toBeGreaterThan(0);
     expect(unique(stack.flatMap((g) => g.items.map((i) => i.name)))).toBe(true);
+  });
+});
+
+describe("navigation", () => {
+  it("keeps the menu short (max 3 links)", () => {
+    expect(navigation.links.length).toBeLessThanOrEqual(3);
+  });
+
+  it("uses anchors or routes for links, and a valid link for the cta", () => {
+    for (const l of navigation.links) expect(l.href).toMatch(/^\/(#[a-z0-9-]+|[a-z0-9/-]*)$/);
+    expect(unique(navigation.links.map((l) => l.href))).toBe(true);
+    expect(isLink(navigation.cta.href)).toBe(true);
+  });
+
+  it("points the cta at the public email", () => {
+    expect(site.email).toMatch(/^[^\s@]+@cdls\.dev$/);
+    expect(navigation.cta.href).toBe(`mailto:${site.email}`);
+  });
+});
+
+describe("about", () => {
+  it("keeps the bio to two short lines", () => {
+    expect(words(about.bio)).toBeLessThanOrEqual(25);
+  });
+
+  it("has a journey with unique orgs and filled fields", () => {
+    expect(about.journey.length).toBeGreaterThan(0);
+    expect(unique(about.journey.map((j) => j.org))).toBe(true);
+    for (const j of about.journey) {
+      expect(j.org.trim()).not.toBe("");
+      expect(j.role.trim()).not.toBe("");
+      expect(j.period.trim()).not.toBe("");
+    }
+  });
+});
+
+describe("blog posts", () => {
+  it("have unique kebab-case slugs", () => {
+    expect(unique(posts.map((p) => p.slug))).toBe(true);
+    for (const p of posts) expect(p.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+  });
+
+  it.each(posts)("$slug has valid metadata and loads its MDX", async (p) => {
+    expect(p.title.trim()).not.toBe("");
+    expect(p.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(Date.parse(p.date))).toBe(false);
+    expect(words(p.summary)).toBeLessThanOrEqual(20);
+    expect(typeof p.load).toBe("function");
   });
 });

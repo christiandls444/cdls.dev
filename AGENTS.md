@@ -35,7 +35,7 @@ src/
     page.tsx           home: composes sections only, no markup logic
   components/
     layout/            site-header, site-footer
-    sections/          one file per page section (hero, stack, projects)
+    sections/          one file per page section (hero, projects, about)
     ui/                small reusable primitives (icon, section, fade-in, logo, social-links)
   content/             EDIT HERE to change what the site says (site, stack, projects)
   lib/                 helpers (cn, icon builders, custom brand icons)
@@ -45,24 +45,25 @@ docs/                  ARCHITECTURE, DESIGN, SECURITY, DEPLOYMENT
 
 ## Common tasks
 
-| Task                     | Where                                                                                                    |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Add/edit a project       | `src/content/projects.ts`                                                                                |
-| Add a tech logo          | `src/content/stack.ts` (`brand(siX)` from simple-icons; `line(LucideIcon)` if the brand is missing)      |
-| Change name/links        | `src/content/site.ts` (empty `href` hides a social link)                                                 |
-| Add a page section       | new file in `components/sections/`, wrap in `<Section id label>`, add to `app/page.tsx` and header `nav` |
-| Add a route              | `src/app/<route>/page.tsx` + add it to `src/app/sitemap.ts`                                              |
-| Call an external service | server-side only (Server Action / Route Handler), key in env, origin in CSP. See `docs/SECURITY.md`      |
+| Task                           | Where                                                                                                    |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Add/edit a project             | `src/content/projects.ts`                                                                                |
+| Add a tech logo                | `src/content/stack.ts` (`brand(siX)` from simple-icons; `line(LucideIcon)` if the brand is missing)      |
+| Change name/links              | `src/content/site.ts` (empty `href` hides a social link)                                                 |
+| Edit bio / journey             | `src/content/about.ts`                                                                                   |
+| Edit hero badges / hover roles | `src/content/site.ts` (`badges`, max 2; `roles`, shown on hover/tap)                                     |
+| Add a menu link                | `src/content/navigation.ts` (max 3; the `#id` must exist on the page)                                    |
+| Publish a blog post            | `src/content/posts/<slug>.mdx` + one entry in `src/content/posts/index.ts`                               |
+| Add a page section             | new file in `components/sections/`, wrap in `<Section id label>`, add to `app/page.tsx` and header `nav` |
+| Add a route                    | `src/app/<route>/page.tsx` + add it to `src/app/sitemap.ts`                                              |
+| Call an external service       | server-side only (Server Action / Route Handler), key in env, origin in CSP. See `docs/SECURITY.md`      |
 
 ## Conventions
 
-- **Server Components by default.** Add `"use client"` only for interactivity/animation, and keep those components small (see `ui/fade-in.tsx`).
-- Files `kebab-case.tsx`, components `PascalCase`, named exports (except Next route files, which use default exports).
-- Imports use the `@/` alias.
-- Styling: Tailwind utility classes with tokens (`bg-bg`, `text-fg`, `text-muted`, `border-line`, `text-gold`, `bg-gold-soft`, `text-blue`, `bg-surface`). Merge conditional classes with `cn()`.
-- Icons go through `<Icon>`. Decorative icons are `aria-hidden`; icon-only links need `aria-label`.
-- Content is typed data, not JSX. Components read from `content/`, and content never imports components.
-- Do not use `new Date()`, `Math.random()` or request APIs in server components without `"use cache"` or `<Suspense>`, because Cache Components will fail the build. Read `node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md`.
+**Follow [docs/CONVENTIONS.md](docs/CONVENTIONS.md).** It covers layers, file anatomy, server vs client,
+styling, content and tests, and most of it is enforced by ESLint and `tests/unit/standards.test.ts`.
+Key points: server components by default, tokens only for colors, content as typed data, `@/` imports,
+named exports, a test with every feature.
 
 ## Commands
 
@@ -104,9 +105,11 @@ Both `main` and `develop` are protected: no direct pushes, CI (`check`) must pas
 
 - Branch: `<type>/<kebab-name>`, e.g. `feat/project-rag-chatbot`
 - Commit / PR title: `<type>(<scope>): <imperative, lowercase, no period>`, e.g. `feat(projects): add rag chatbot`
-  **Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
+- **Never delete branches** (local or remote) after merging, and never use `--delete-branch`.
+- **Never add AI attribution** (`Co-Authored-By`, "Generated with …") to commits or PRs. The owner is the only author.
 
 ## Definition of done
 
-`npm run check`, `npm run build` and `npm run test:e2e` pass. No new client components without a reason. No secrets in code.
+`npm run check`, `npm run build` and `npm run test:e2e` pass. `/code-review` has run on the diff and its
+findings are fixed. No new client components or colors outside the allowlists. No secrets in code.
 Docs updated if you changed structure, tokens, headers or deployment.

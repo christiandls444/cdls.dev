@@ -7,7 +7,7 @@ import { site } from "@/content/site";
  */
 export function Logo() {
   return (
-    <Link href="/" className="font-serif text-2xl leading-none tracking-tight text-fg">
+    <Link href="/" className="text-xl leading-none font-medium tracking-tight text-fg">
       {site.shortName}
       <span className="text-gold" aria-hidden>
         .
