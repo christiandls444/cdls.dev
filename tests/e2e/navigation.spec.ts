@@ -1,6 +1,7 @@
 import { navigation } from "@/content/navigation";
 import { site } from "@/content/site";
 import { expect, test } from "./fixtures";
+import { settle } from "./helpers";
 
 test("every home-section menu link has a matching section", async ({ page }) => {
   await page.goto("/");
@@ -120,4 +121,89 @@ test("the role line opens on a random role on every load", async ({ page }) => {
   }
   // 6 loads over 10 roles all opening on the same one: ~1 in 100,000.
   expect(firsts.size).toBeGreaterThan(1);
+});
+
+test("menu grows from the ☰ as a circle, the ☰ turns into × in place, and shrinks back", async ({
+  page,
+}) => {
+  await page.goto("/");
+  // Let the page finish rising in after load, so the ☰ is at rest before measuring.
+  await page
+    .locator(".page-rise")
+    .evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+  const openBtn = page.getByRole("button", { name: "Open menu" });
+  const ham = (await openBtn.boundingBox())!;
+  await openBtn.click();
+  const menu = page.getByRole("dialog", { name: "Menu" });
+
+  // The open runs as a clip-path circle animation on the dialog.
+  const circle = await menu.evaluate((d) =>
+    d
+      .getAnimations()
+      .some((a) => JSON.stringify((a.effect as KeyframeEffect).getKeyframes()).includes("circle")),
+  );
+  expect(circle).toBe(true);
+
+  // × sits exactly where ☰ was, and ends as an X (top bar turned 45°).
+  const closeBtn = menu.getByRole("button", { name: "Close menu" });
+  const x = (await closeBtn.boundingBox())!;
+  expect(Math.abs(x.x - ham.x)).toBeLessThanOrEqual(1);
+  expect(Math.abs(x.y - ham.y)).toBeLessThanOrEqual(1);
+  // Wait for the circle and the icon morph to finish.
+  await settle(page, "dialog");
+  const top = await closeBtn
+    .locator(".menu-icon__top")
+    .evaluate((l) => getComputedStyle(l).transform);
+  expect(top).not.toBe("none");
+
+  // Opening focuses the menu itself, so the logo shows no focus ring.
+  await expect(menu).toBeFocused();
+
+  // Closing shrinks the circle back first (still open while it plays), then closes.
+  await closeBtn.click();
+  await expect(menu).toHaveAttribute("data-closing");
+  expect(await menu.evaluate((d: HTMLDialogElement) => d.open)).toBe(true);
+  await expect(menu).toBeHidden();
+  await expect(openBtn).toBeFocused();
+});
+
+test("menu rows come in one by one from the top, and leave one by one from the bottom", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const menu = page.getByRole("dialog", { name: "Menu" });
+  /** Each row's delay for its CSS rise (open) or its scripted drop (close), in DOM order. */
+  const rowDelays = (css: boolean) =>
+    menu.locator(".menu-stagger").evaluateAll(
+      (rows, wantCss) =>
+        rows.map((r) => {
+          const a = r
+            .getAnimations()
+            .find((x) => x instanceof CSSAnimation === wantCss && x.playState !== "paused");
+          return a ? Number(a.effect!.getTiming().delay) : -1;
+        }),
+      css,
+    );
+
+  const opening = await rowDelays(true);
+  expect(opening.length).toBeGreaterThanOrEqual(5);
+  for (let i = 1; i < opening.length; i++) expect(opening[i]).toBeGreaterThan(opening[i - 1]);
+
+  await settle(page, "dialog");
+  await menu.getByRole("button", { name: "Close menu" }).click();
+  // Bottom row leaves first: delays fall from top to bottom.
+  const closing = await rowDelays(false);
+  for (let i = 1; i < closing.length; i++) expect(closing[i]).toBeLessThan(closing[i - 1]);
+  // The circle waits for the rows to leave before it shrinks.
+  const circleDelay = await menu.evaluate((d) =>
+    Number(
+      d
+        .getAnimations()
+        .find((a) => !(a instanceof CSSAnimation))!
+        .effect!.getTiming().delay,
+    ),
+  );
+  expect(circleDelay).toBeGreaterThanOrEqual(Math.max(...closing));
+  await expect(menu).toBeHidden();
 });

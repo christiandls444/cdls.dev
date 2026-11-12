@@ -85,25 +85,73 @@ body {
 /* Full-screen menu (components/layout/menu-dialog.tsx) */
 html:has(dialog.menu-dialog[open]) {
   overflow: hidden; /* no page scroll behind the menu */
+  /* The scrollbar it hides (classic scrollbars only; 0 otherwise), so nothing shifts. */
+  padding-right: var(--menu-scrollbar, 0px);
 }
 
-dialog.menu-dialog[open] {
-  animation: menu-in 200ms ease-out;
+/*
+ * Opening: the dialog grows as a circle from the × (clip-path, menu-dialog.tsx), which
+ * sits right on the header's ☰ at the top of the page; the
+ * close button's bars turn into × with a half turn, then the rows rise in one by one.
+ * Closing (menu-dialog.tsx): the visible rows drop out one by one, last first, then the
+ * circle shrinks back into the button while × turns back into ☰, and the header's ☰
+ * takes over.
+ */
+.menu-icon line {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+}
+.menu-icon--morph {
+  transform: rotate(180deg);
+}
+.menu-icon--morph .menu-icon__top {
+  transform: rotate(45deg) translateY(6px);
+}
+.menu-icon--morph .menu-icon__mid {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.menu-icon--morph .menu-icon__bottom {
+  transform: rotate(-45deg) translateY(-6px);
 }
 
-@keyframes menu-in {
+@media (prefers-reduced-motion: no-preference) {
+  /* Timings: custom properties set on the dialog from lib/motion.ts (MENU). */
+  dialog.menu-dialog[open] .menu-icon--morph,
+  dialog.menu-dialog[open] .menu-icon--morph line {
+    animation: var(--icon-ms) var(--icon-ease) var(--icon-delay) both;
+    animation-name: menu-icon-to-x;
+  }
+
+  /* Once the circle has nearly covered the screen, row by row from the top (Work …
+   * the icons), each rising into place. Closing runs in menu-dialog.tsx. */
+  dialog.menu-dialog[open] .menu-stagger {
+    animation: menu-item-in var(--row-in-ms) cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--row-in-delay) + var(--i) * var(--row-in-stagger)) both;
+  }
+}
+
+/* Each part animates from its ☰ pose (none) to its × pose (rules above). */
+@keyframes menu-icon-to-x {
   from {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* visibility: an invisible row can't be clicked while it waits its turn. */
+@keyframes menu-item-in {
+  from {
+    visibility: hidden;
     opacity: 0;
+    filter: blur(var(--row-blur));
+    transform: translateY(var(--row-rise));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  dialog.menu-dialog[open] {
-    animation: none;
   }
 }
 

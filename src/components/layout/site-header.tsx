@@ -10,6 +10,8 @@ import { MenuDialog } from "./menu-dialog";
  */
 export function SiteHeader() {
   const { links, cta } = navigation;
+  // Menu rows (each link, then the icon row) rise in one by one, in --i order.
+  const row = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
   return (
     <header className="relative z-40">
@@ -18,8 +20,8 @@ export function SiteHeader() {
         <MenuDialog>
           <nav aria-label="Main">
             <ul className="flex flex-col gap-2">
-              {[...links, cta].map((item) => (
-                <li key={item.href}>
+              {[...links, cta].map((item, i) => (
+                <li key={item.href} className="menu-stagger" style={row(i)}>
                   <a
                     href={item.href}
                     className="group inline-flex items-baseline gap-3 text-5xl leading-tight font-light tracking-[-0.04em] text-fg transition-colors hover:text-gold sm:text-7xl"
@@ -34,7 +36,10 @@ export function SiteHeader() {
               ))}
             </ul>
           </nav>
-          <div className="mt-12 -ml-2 flex items-center gap-1">
+          <div
+            className="menu-stagger mt-12 -ml-2 flex items-center gap-1"
+            style={row(links.length + 1)}
+          >
             <SocialLinks />
             <ThemeToggle />
           </div>

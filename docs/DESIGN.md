@@ -34,5 +34,8 @@ Gold is an **accent**, never body text. Blue is for **links**. Everything else i
 - Every item gets an icon: a brand logo (simple-icons) or a lucide line icon at `strokeWidth={1.5}`.
 - Icons are monochrome (`currentColor`). Hover turns them gold (no hover fill/circle). No multicolor brand logos.
 - Layout: `max-w-5xl`, `px-6`, sections `py-20 sm:py-28`, cards `rounded-2xl`, tiles `rounded-xl`.
-- Motion: only `FadeIn` (fade + 12px rise, once). It respects reduced motion. No bouncing, no parallax.
+- Motion: sections use `FadeIn` (fade + 12px rise, once). The theme toggle and the menu share one
+  **circle reveal** (same speed and curve, `CIRCLE_*` in `lib/motion.ts`): the menu grows from the
+  menu button while ☰ turns into ×, its rows rise in one by one, and closing runs it backwards
+  (menu timings: `MENU` in the same file). Everything respects reduced motion. No bouncing, no parallax.
 - Accessibility: visible gold focus ring, `aria-label` on icon-only links, colour contrast AA.

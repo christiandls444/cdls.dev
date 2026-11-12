@@ -79,13 +79,14 @@ npm run format       # prettier (sorts Tailwind classes too)
 
 ## Tests
 
-| Layer            | Where                        | Guards                                                        |
-| ---------------- | ---------------------------- | ------------------------------------------------------------- |
-| Unit (Vitest)    | `tests/unit/`                | content rules: valid links, one-line summaries, unique slugs  |
-| E2E (Playwright) | `tests/e2e/home.spec.ts`     | page renders, no console errors, styles load, 404             |
-| Theme            | `tests/e2e/theme.spec.ts`    | dark by default, toggle switches + remembers, no flash        |
-| Security         | `tests/e2e/security.spec.ts` | security headers, `noopener` links, robots outside production |
-| Accessibility    | `tests/e2e/a11y.spec.ts`     | axe WCAG 2.1 A/AA in light and dark                           |
+| Layer            | Where                           | Guards                                                            |
+| ---------------- | ------------------------------- | ----------------------------------------------------------------- |
+| Unit (Vitest)    | `tests/unit/`                   | content rules: valid links, one-line summaries, unique slugs      |
+| E2E (Playwright) | `tests/e2e/home.spec.ts`        | page renders, no console errors, styles load, 404                 |
+| Theme            | `tests/e2e/theme.spec.ts`       | dark by default, toggle switches + remembers, no flash            |
+| Menu stress      | `tests/e2e/menu-stress.spec.ts` | rapid taps, Escape/link mid-animation, theme spam, reduced motion |
+| Security         | `tests/e2e/security.spec.ts`    | security headers, `noopener` links, robots outside production     |
+| Accessibility    | `tests/e2e/a11y.spec.ts`        | axe WCAG 2.1 A/AA in light and dark                               |
 
 Add a test with every feature. If you add a route, add it to the header test loop in `security.spec.ts`.
 
