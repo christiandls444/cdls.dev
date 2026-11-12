@@ -17,6 +17,14 @@ describe("site", () => {
     expect(site.url.endsWith("/")).toBe(false);
   });
 
+  it("shortName is the initials of the name (the intro letters land on them)", () => {
+    const initials = site.name
+      .split(" ")
+      .map((w) => w[0])
+      .join("");
+    expect(site.shortName).toBe(initials);
+  });
+
   it("has 1-2 hero badges with role and place filled in", () => {
     expect(site.badges.length).toBeGreaterThanOrEqual(1);
     expect(site.badges.length).toBeLessThanOrEqual(2);

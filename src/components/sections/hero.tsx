@@ -41,7 +41,8 @@ export function Hero() {
           </ul>
         </HeroIn>
 
-        <HeroIn delay={80}>
+        {/* hero-in--name: holds still during the intro so the loader letters land on it. */}
+        <HeroIn delay={80} className="hero-in--name">
           <HeroName
             lines={lines}
             className="mt-5 text-[clamp(3rem,10vw,8.5rem)] leading-[0.92] font-light tracking-[-0.045em] text-fg"
@@ -97,8 +98,8 @@ function PillLink({
 
 /**
  * Hero reveal in pure CSS (`.hero-in` in globals.css): it starts at first paint, so
- * the name shows even before (or without) JavaScript. With the CDLS intro it waits
- * for the curtain via a CSS sibling selector.
+ * the name shows even before (or without) JavaScript. With the intro it waits for
+ * the intro's exit (morph or curtain) via a CSS sibling selector.
  */
 function HeroIn({
   delay,

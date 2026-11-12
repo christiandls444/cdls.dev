@@ -42,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col font-sans">
         <IntroLoader />
-        {/* Sibling of #intro on purpose: .page-rise waits for the curtain via CSS (~). */}
+        {/* Sibling of #intro on purpose: .page-rise waits for the intro exit via CSS (~). */}
         <div className="page-rise flex flex-1 flex-col">
           <SiteHeader />
           <main className="flex-1">{children}</main>

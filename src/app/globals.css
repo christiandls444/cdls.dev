@@ -250,9 +250,9 @@ dialog.menu-dialog[open] {
   }
 }
 
-/* "Thinking" float for the hero role line: a slow wave runs left to right, each
- * letter drifting up a few px and dimming a touch. Put it on an inner span (it stacks
- * with the outer span's own animation); --n = letter index.
+/* "Thinking" float, shared by the hero role line and the intro letters: a slow wave
+ * runs left to right, each letter drifting up ~3px and dimming a touch. Put it on an
+ * inner span (it stacks with the outer span's own animation); --n = letter index.
  * The negative delay starts the wave mid-flow instead of from rest. */
 .think {
   --think-ms: 2800ms;
@@ -261,6 +261,14 @@ dialog.menu-dialog[open] {
   display: inline-block;
   animation: think var(--think-ms) ease-in-out
     calc(var(--n, 0) * var(--think-step) - var(--think-ms)) infinite;
+}
+
+/* The intro has only 6 letters and short holds: a quicker, deeper wave so it reads
+ * as a wave rather than the whole mark bobbing together. */
+.intro-loader .think {
+  --think-ms: 1400ms;
+  --think-step: 200ms;
+  --think-lift: -0.09em;
 }
 
 @keyframes think {
@@ -282,11 +290,17 @@ dialog.menu-dialog[open] {
   }
 }
 
-/* CDLS intro loader (components/intro/intro-loader.tsx).
- * One cycle (2s): letters rise in one by one, the gold dot pops, ~1s hold, both lift.
- * Runs 2 cycles; the 2nd stops while "CDLS." is visible (fractional iteration count),
- * the mark fades, then the screen slides up like a curtain while the page rises in.
- * Total 4.8s = INTRO_MS. */
+/* CMDLS intro (components/intro/intro-loader.tsx + intro-script.ts).
+ * 0–6s:  three cycles: the letters rise in one by one, the gold dot pops, hold, lift;
+ *        the 3rd cycle stops on the hold (fractional iteration count).
+ * Then the script picks the exit and sets an attribute on #intro:
+ *   data-morph   the page fades in under the loader and the letters fly onto the
+ *                hero name one by one (C, M, D, L, S, then the dot), ≈ 2s.
+ *   data-landed  all arrived: the real hero letters take over, the loader hides,
+ *                the rest of the name writes out, then the hero items rise in.
+ *   data-curtain any other page: the mark fades and the screen slides up.
+ * Until then the page waits, paused (hero items keep their place, no transform),
+ * so the hero name can be measured exactly. Total ≈ 9s = INTRO_MS. */
 .intro-loader {
   display: none;
 }
@@ -299,18 +313,6 @@ dialog.menu-dialog[open] {
   place-items: center;
   background: var(--bg);
   color: var(--fg);
-  animation: intro-curtain 800ms cubic-bezier(0.76, 0, 0.24, 1) 4000ms forwards;
-}
-
-.intro-loader[data-show] .intro-loader__mark {
-  animation: intro-mark-out 300ms ease-in 3950ms forwards;
-}
-
-@keyframes intro-mark-out {
-  to {
-    opacity: 0;
-    transform: translateY(-25%);
-  }
 }
 
 .intro-loader__letter,
@@ -319,26 +321,14 @@ dialog.menu-dialog[open] {
   opacity: 0;
 }
 
+/* 2.75 cycles = stop at the end of the 3rd "visible" hold. --n = letter index. */
 .intro-loader__letter {
-  /* 1.75 cycles = stop on the "visible" hold of the 2nd cycle */
-  animation: intro-letter-cycle 2000ms cubic-bezier(0.22, 1, 0.36, 1) 1.75 forwards;
-}
-
-.intro-loader__letter:nth-child(1) {
-  animation-delay: 100ms;
-}
-.intro-loader__letter:nth-child(2) {
-  animation-delay: 220ms;
-}
-.intro-loader__letter:nth-child(3) {
-  animation-delay: 340ms;
-}
-.intro-loader__letter:nth-child(4) {
-  animation-delay: 460ms;
+  animation: intro-letter-cycle 2000ms cubic-bezier(0.22, 1, 0.36, 1) 2.75 forwards;
+  animation-delay: calc(100ms + var(--n, 0) * 100ms);
 }
 
 .intro-loader__dot {
-  animation: intro-dot-cycle 2000ms ease-out 1.78 forwards;
+  animation: intro-dot-cycle 2000ms ease-out 300ms 2.78 forwards;
 }
 
 @keyframes intro-letter-cycle {
@@ -380,23 +370,10 @@ dialog.menu-dialog[open] {
   }
 }
 
-/* Curtain: slide the whole screen up and out, then stop catching clicks. */
-@keyframes intro-curtain {
-  to {
-    transform: translateY(-100%);
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
-
-/* Page rise (header + main + footer wrapper in layout.tsx). Every full load,
- * refresh included. With the intro, it waits for the curtain and rises with it. */
+/* Page rise (header + main + footer wrapper in layout.tsx), every full load,
+ * refresh included. */
 .page-rise {
   animation: page-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
-}
-
-.intro-loader[data-show] ~ .page-rise {
-  animation-delay: 4050ms;
 }
 
 /* Hero items (sections/hero.tsx → HeroIn). --d = per-item stagger. */
@@ -404,9 +381,107 @@ dialog.menu-dialog[open] {
   animation: hero-in 600ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both;
 }
 
-/* With the intro: start as the curtain lifts (4.3s), keep the stagger. */
+/* While the intro shows: everything waits at its first frame. The page waits as a
+ * fade (no transform), so the hero name sits exactly where it will end up. */
+.intro-loader[data-show] ~ .page-rise {
+  animation-name: page-fade;
+  animation-play-state: paused;
+}
+
 .intro-loader[data-show] ~ .page-rise .hero-in {
-  animation-delay: calc(4300ms + var(--d, 0ms));
+  animation-play-state: paused;
+}
+
+.intro-loader[data-show] ~ .page-rise .hero-in--name {
+  animation-name: none;
+}
+
+/* No scrolling until the letters have landed, or the hero would move under them.
+ * The gutter stays reserved so unlocking never shifts the layout sideways. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.intro-loader[data-show]:not([data-landed], [data-curtain])) {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Exit 1, morph: the loader goes see-through, the letters fly (script). */
+.intro-loader[data-morph] {
+  pointer-events: none;
+  animation: intro-bg-out 600ms ease-out forwards;
+}
+
+.intro-loader[data-show][data-landed] {
+  visibility: hidden;
+}
+
+.intro-loader[data-morph] ~ .page-rise {
+  animation: page-fade 700ms ease-out both;
+}
+
+/* Until every letter has landed, the hero name is empty (the loader letters stand in). */
+.intro-loader[data-morph]:not([data-landed])
+  ~ .page-rise
+  :is([data-morph-target], .hero-name__letter) {
+  opacity: 0;
+}
+
+/* Landed: the rest of the name writes out (--letter-delay from hero-name.tsx),
+ * then the badges and actions rise in. */
+.intro-loader[data-landed] ~ .page-rise .hero-name__letter {
+  animation: name-letter 450ms ease-out var(--letter-delay, 0ms) both;
+}
+
+.intro-loader[data-landed] ~ .page-rise .hero-in {
+  animation-delay: calc(250ms + var(--d, 0ms));
+  animation-play-state: running;
+}
+
+@keyframes intro-bg-out {
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes name-letter {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Exit 2, curtain: the mark fades, the screen slides up, the page rises with it. */
+.intro-loader[data-curtain] {
+  animation: intro-curtain 800ms cubic-bezier(0.76, 0, 0.24, 1) 50ms forwards;
+}
+
+.intro-loader[data-curtain] .intro-loader__mark {
+  animation: intro-mark-out 300ms ease-in forwards;
+}
+
+.intro-loader[data-curtain] ~ .page-rise {
+  animation: page-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.intro-loader[data-curtain] ~ .page-rise .hero-in {
+  animation-name: hero-in;
+  animation-delay: calc(350ms + var(--d, 0ms));
+  animation-play-state: running;
+}
+
+@keyframes intro-mark-out {
+  to {
+    opacity: 0;
+    transform: translateY(-25%);
+  }
+}
+
+/* Slide the whole screen up and out, then stop catching clicks. */
+@keyframes intro-curtain {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 @keyframes hero-in {
@@ -427,6 +502,8 @@ dialog.menu-dialog[open] {
   }
 }
 
+/* Reduced motion: no flight, no slide. The script only sets data-show; the
+ * loader fades out and the page fades in. */
 @media (prefers-reduced-motion: reduce) {
   .intro-loader__letter,
   .intro-loader__dot {
@@ -434,8 +511,7 @@ dialog.menu-dialog[open] {
     animation: none;
   }
 
-  .intro-loader[data-show],
-  .intro-loader[data-show] .intro-loader__mark {
+  .intro-loader[data-show] {
     animation: intro-fade 400ms ease-out 1200ms forwards;
   }
 
@@ -448,7 +524,7 @@ dialog.menu-dialog[open] {
   }
 
   .intro-loader[data-show] ~ .page-rise {
-    animation-delay: 1200ms;
+    animation: page-fade 300ms ease-out 1200ms both;
   }
 }
 
