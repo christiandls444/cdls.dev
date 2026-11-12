@@ -119,7 +119,7 @@ export function ThemeToggle() {
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="theme-toggle grid size-10 place-items-center rounded-full text-muted transition-colors hover:bg-gold-soft hover:text-gold"
+      className="theme-toggle grid size-10 cursor-pointer place-items-center rounded-full text-muted transition-colors hover:text-gold"
     >
       <Sun className="theme-toggle__sun size-[18px]" strokeWidth={1.5} aria-hidden />
       <Moon className="theme-toggle__moon size-[18px]" strokeWidth={1.5} aria-hidden />

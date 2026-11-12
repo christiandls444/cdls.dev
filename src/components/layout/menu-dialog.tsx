@@ -60,7 +60,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="-mr-2 grid size-10 place-items-center rounded-full text-fg transition-colors hover:bg-gold-soft hover:text-gold"
+      className="-mr-2 grid size-10 cursor-pointer place-items-center rounded-full text-fg transition-colors hover:text-gold"
     >
       {children}
     </button>

@@ -13,7 +13,7 @@ export function SocialLinks({ className }: { className?: string }) {
             <a
               href={s.href}
               {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-              className="grid size-10 place-items-center rounded-full text-muted transition-colors hover:bg-gold-soft hover:text-gold"
+              className="grid size-10 place-items-center rounded-full text-muted transition-colors hover:text-gold"
               aria-label={s.label}
               title={s.label}
             >
