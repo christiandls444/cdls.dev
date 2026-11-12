@@ -218,35 +218,66 @@ dialog.menu-dialog[open] {
   }
 }
 
-/* Hero role pill (components/sections/name-roles.tsx) */
-.role-pill {
-  opacity: 0;
-  transform: translateY(4px);
-  transition:
-    opacity 200ms ease-out,
-    transform 200ms ease-out;
+/* Hero role line (components/sections/role-ticker.tsx): the old role fades out letter
+ * by letter, the next writes in the same way (like the name after the intro).
+ * --n = letter index; out timings match OUT_STAGGER_MS / OUT_MS in the component. */
+.role-ticker__letter {
+  display: inline-block;
+  white-space: pre;
 }
 
-.role-pill[data-open="true"] {
-  opacity: 1;
-  transform: none;
+.role-ticker[data-phase="in"] .role-ticker__letter {
+  animation: role-letter-in 850ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--n, 0) * 45ms) both;
 }
 
-.role-pill__word {
-  animation: role-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+.role-ticker[data-phase="out"] .role-ticker__letter {
+  animation: role-letter-out 480ms ease-in calc(var(--n, 0) * 30ms) forwards;
 }
 
-@keyframes role-in {
+@keyframes role-letter-in {
   from {
     opacity: 0;
-    transform: translateY(100%);
+    filter: blur(10px);
+    transform: translateY(0.12em);
+  }
+}
+
+@keyframes role-letter-out {
+  to {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(-0.08em);
+  }
+}
+
+/* "Thinking" float for the hero role line: a slow wave runs left to right, each
+ * letter drifting up a few px and dimming a touch. Put it on an inner span (it stacks
+ * with the outer span's own animation); --n = letter index.
+ * The negative delay starts the wave mid-flow instead of from rest. */
+.think {
+  --think-ms: 2800ms;
+  --think-step: 140ms;
+  --think-lift: -0.07em;
+  display: inline-block;
+  animation: think var(--think-ms) ease-in-out
+    calc(var(--n, 0) * var(--think-step) - var(--think-ms)) infinite;
+}
+
+@keyframes think {
+  0%,
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(var(--think-lift));
+    opacity: 0.75;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .role-pill,
-  .role-pill__word {
-    transition: none;
+  .role-ticker[data-phase] .role-ticker__letter,
+  .think {
     animation: none;
   }
 }

@@ -63,11 +63,11 @@ function Helper() { … }                  // 5. private helpers last
 Server components by default. A client component is allowed only for real interactivity, kept
 small, and listed with its reason in `CLIENT_COMPONENTS` in `tests/unit/standards.test.ts`:
 
-| File                                 | Why it is a client component   |
-| ------------------------------------ | ------------------------------ |
-| `components/ui/fade-in.tsx`          | scroll-triggered fade (motion) |
-| `components/layout/menu-dialog.tsx`  | opens/closes the menu dialog   |
-| `components/sections/name-roles.tsx` | hover/tap role pill            |
+| File                                  | Why it is a client component   |
+| ------------------------------------- | ------------------------------ |
+| `components/ui/fade-in.tsx`           | scroll-triggered fade (motion) |
+| `components/layout/menu-dialog.tsx`   | opens/closes the menu dialog   |
+| `components/sections/role-ticker.tsx` | cycles the hero role line      |
 
 Cache Components (Next 16): don't call `new Date()`, `Math.random()` or request APIs in a server
 component without `"use cache"` or `<Suspense>`, or the build fails. Format fixed dates with

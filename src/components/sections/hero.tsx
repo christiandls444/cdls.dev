@@ -2,7 +2,8 @@ import { navigation } from "@/content/navigation";
 import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { HeroBackground } from "./hero-background";
-import { NameRoles } from "./name-roles";
+import { HeroName } from "./hero-name";
+import { RoleTicker } from "./role-ticker";
 
 /**
  * Full-height hero, content anchored bottom-left: badge, name, two actions,
@@ -18,25 +19,32 @@ export function Hero() {
   return (
     <section className="relative isolate">
       <HeroBackground />
-      <div className="mx-auto flex min-h-[72svh] w-full max-w-5xl flex-col justify-end px-6 pt-16 pb-12 sm:min-h-[calc(100dvh-4rem)] sm:pt-24 sm:pb-16">
+      <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-5xl flex-col justify-end px-6 pt-16 pb-12 sm:min-h-[calc(100dvh-4rem)] sm:pt-24 sm:pb-16">
+        {/* The open top area: one large role line, right-aligned with the menu icon
+            (pr-1 matches the icon's inner padding, so the visible edges line up). */}
+        <div className="flex flex-1 items-center pb-10">
+          <HeroIn delay={320} className="w-full pr-1 text-right">
+            <RoleTicker
+              roles={site.roles}
+              className="text-[clamp(1.5rem,5vw,4.25rem)] leading-[1.2] font-light tracking-[-0.035em] text-muted"
+            />
+          </HeroIn>
+        </div>
+
         <HeroIn delay={0}>
           <ul className="flex flex-col gap-2 font-mono text-xs text-muted">
             {site.badges.map((b) => (
-              <li key={b.org} className="flex items-start gap-2 leading-5">
-                <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
-                <span>
-                  {b.role} <span className="whitespace-nowrap">· {b.org}</span>
-                </span>
+              <li key={b.org} className="leading-5">
+                {b.role} <span className="whitespace-nowrap">· {b.org}</span>
               </li>
             ))}
           </ul>
         </HeroIn>
 
         <HeroIn delay={80}>
-          <NameRoles
+          <HeroName
             lines={lines}
-            roles={site.roles}
-            className="mt-5 cursor-default text-[clamp(3rem,10vw,8.5rem)] leading-[0.92] font-light tracking-[-0.045em] text-fg select-none"
+            className="mt-5 text-[clamp(3rem,10vw,8.5rem)] leading-[0.92] font-light tracking-[-0.045em] text-fg"
           />
         </HeroIn>
 
