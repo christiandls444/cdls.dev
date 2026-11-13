@@ -26,6 +26,7 @@ export function Hero() {
           <HeroIn delay={320} className="w-full pr-1 text-right">
             <RoleTicker
               roles={site.roles}
+              lead={site.leadRole}
               className="text-[clamp(1.5rem,5vw,4.25rem)] leading-[1.2] font-light tracking-[-0.035em] text-muted"
             />
           </HeroIn>

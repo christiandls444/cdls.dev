@@ -34,10 +34,14 @@ describe("site", () => {
     }
   });
 
-  it("has unique, short hover roles", () => {
+  it("has unique, short roles for the role line", () => {
     expect(site.roles.length).toBeGreaterThanOrEqual(1);
     expect(unique(site.roles)).toBe(true);
     for (const r of site.roles) expect(words(r)).toBeLessThanOrEqual(3);
+  });
+
+  it("opens the role line on one of the roles", () => {
+    if (site.leadRole) expect(site.roles).toContain(site.leadRole);
   });
 
   it("keeps the tagline short", () => {

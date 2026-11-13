@@ -1,7 +1,11 @@
 import { navigation } from "@/content/navigation";
 import { site } from "@/content/site";
+import { INTRO_KEY } from "@/lib/intro";
 import { expect, test } from "./fixtures";
 import { settle } from "./helpers";
+
+/** The role line shows one of the roles followed by "...". */
+const isRole = (text: string) => text.endsWith("...") && site.roles.includes(text.slice(0, -3));
 
 test("every home-section menu link has a matching section", async ({ page }) => {
   await page.goto("/");
@@ -87,11 +91,11 @@ test("a large role line fills the open top of the hero and cycles through the ro
   const h1 = main.getByRole("heading", { level: 1 });
 
   // Always visible (phones too), decorative, above the badges, right-aligned with the
-  // menu icon, and about half the size of the name.
+  // menu icon, and about half the size of the name. Every role trails "...".
   const text = async () => (await label.innerText()).trim();
   await expect(label).toBeVisible();
   await expect(label).toHaveAttribute("aria-hidden", "true");
-  await expect.poll(async () => site.roles.includes(await text())).toBe(true);
+  await expect.poll(async () => isRole(await text())).toBe(true);
   const l = (await label.boundingBox())!;
   const badges = (await main.locator("ul").first().boundingBox())!;
   expect(l.y + l.height).toBeLessThanOrEqual(badges.y);
@@ -107,20 +111,38 @@ test("a large role line fills the open top of the hero and cycles through the ro
   // Cycles (fades out, writes in letter by letter): only roles from content.
   const first = await text();
   await expect.poll(text, { timeout: 7000 }).not.toBe(first);
-  expect(site.roles).toContain(await text());
+  expect(isRole(await text())).toBe(true);
   await expect(h1).toHaveAccessibleName(site.name);
 });
 
-test("the role line opens on a random role on every load", async ({ page }) => {
+test("a new session opens the role line on the lead role; refreshes on a random one", async ({
+  page,
+}) => {
   const label = page.getByRole("main").locator(".role-ticker");
+  const text = async () => (await label.innerText()).trim();
+  await page.goto("/");
+  await expect.poll(text).toBe(`${site.leadRole}...`);
+
   const firsts = new Set<string>();
   for (let i = 0; i < 6; i++) {
-    await (i === 0 ? page.goto("/") : page.reload());
-    await expect.poll(async () => site.roles.includes((await label.innerText()).trim())).toBe(true);
-    firsts.add((await label.innerText()).trim());
+    await page.reload();
+    await expect.poll(async () => isRole(await text())).toBe(true);
+    firsts.add(await text());
   }
-  // 6 loads over 10 roles all opening on the same one: ~1 in 100,000.
+  // 6 refreshes over 11 roles all opening on the same one: ~1 in 160,000.
   expect(firsts.size).toBeGreaterThan(1);
+});
+
+test("every new tab (new session) opens on the lead role again", async ({ context }) => {
+  // Two tabs in the same browser: the second still opens on the lead, because the
+  // "already shown" flag lives in the tab's session, not the browser's storage.
+  for (let i = 0; i < 2; i++) {
+    const page = await context.newPage();
+    await page.addInitScript((key) => sessionStorage.setItem(key, "1"), INTRO_KEY);
+    await page.goto("/");
+    const label = page.getByRole("main").locator(".role-ticker");
+    await expect.poll(async () => (await label.innerText()).trim()).toBe(`${site.leadRole}...`);
+  }
 });
 
 test("menu grows from the ☰ as a circle, the ☰ turns into × in place, and shrinks back", async ({

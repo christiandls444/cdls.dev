@@ -30,6 +30,7 @@ export const site: SiteConfig = {
     "Handsome",
     "Creative",
   ],
+  leadRole: "Handsome",
   company: "Accenture",
   location: "Philippines",
   tagline: "Building production AI systems, end to end.",
