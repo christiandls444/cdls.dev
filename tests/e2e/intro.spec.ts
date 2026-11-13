@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { site } from "@/content/site";
 import { INTRO_MS } from "@/lib/intro";
 
 const intro = "#intro";
@@ -154,6 +155,17 @@ test("each intro letter lands exactly on its word in the hero name", async ({ pa
     .toBe(true);
 });
 
+test("the role line waits for the intro, then opens on the lead role", async ({ page }) => {
+  await page.goto("/");
+  const label = page.getByRole("main").locator(".role-ticker");
+  const text = async () => (await label.innerText()).trim();
+  await expect(page.locator(intro)).toHaveAttribute("data-show", "");
+  // Still empty while the loader plays: the lead role isn't spent behind it.
+  expect(await text()).toBe("");
+  await expect(page.locator(intro)).toHaveAttribute("data-landed", "", { timeout: INTRO_MS });
+  await expect.poll(text).toBe(`${site.leadRole}...`);
+});
+
 test("a first visit on a page without the hero name exits with the curtain", async ({ page }) => {
   await page.goto("/blog");
   await expect(page.locator(intro)).toHaveAttribute("data-curtain", "", { timeout: INTRO_MS });
@@ -169,6 +181,8 @@ test("reduced motion: no flight, the intro just fades", async ({ browser }) => {
   await expect(page.locator(intro)).toBeHidden({ timeout: 2500 });
   await expect(page.locator(intro)).not.toHaveAttribute("data-morph");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  const label = page.getByRole("main").locator(".role-ticker");
+  await expect.poll(async () => (await label.innerText()).trim()).toBe(`${site.leadRole}...`);
   await context.close();
 });
 

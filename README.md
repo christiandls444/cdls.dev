@@ -15,7 +15,7 @@ npm run dev        # http://localhost:3000
 
 Everything the site says lives in [`src/content/`](src/content):
 
-- `site.ts`: name, role, email, badges, hover roles, social links
+- `site.ts`: name, role, email, badges, role line (and the role that opens a new session), social links
 - `navigation.ts`: menu links
 - `about.ts`: bio and journey
 - `stack.ts`: tech logos (shown in About)

@@ -47,18 +47,18 @@ docs/                  ARCHITECTURE, DESIGN, SECURITY, DEPLOYMENT
 
 ## Common tasks
 
-| Task                           | Where                                                                                                    |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Add/edit a project             | `src/content/projects.ts`                                                                                |
-| Add a tech logo                | `src/content/stack.ts` (`brand(siX)` from simple-icons; `line(LucideIcon)` if the brand is missing)      |
-| Change name/links              | `src/content/site.ts` (empty `href` hides a social link)                                                 |
-| Edit bio / journey             | `src/content/about.ts`                                                                                   |
-| Edit hero badges / hover roles | `src/content/site.ts` (`badges`, max 2; `roles`, shown on hover/tap)                                     |
-| Add a menu link                | `src/content/navigation.ts` (max 3; the `#id` must exist on the page)                                    |
-| Publish a blog post            | `src/content/posts/<slug>.mdx` + one entry in `src/content/posts/index.ts`                               |
-| Add a page section             | new file in `components/sections/`, wrap in `<Section id label>`, add to `app/page.tsx` and header `nav` |
-| Add a route                    | `src/app/<route>/page.tsx` + add it to `src/app/sitemap.ts`                                              |
-| Call an external service       | server-side only (Server Action / Route Handler), key in env, origin in CSP. See `docs/SECURITY.md`      |
+| Task                         | Where                                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Add/edit a project           | `src/content/projects.ts`                                                                                |
+| Add a tech logo              | `src/content/stack.ts` (`brand(siX)` from simple-icons; `line(LucideIcon)` if the brand is missing)      |
+| Change name/links            | `src/content/site.ts` (empty `href` hides a social link)                                                 |
+| Edit bio / journey           | `src/content/about.ts`                                                                                   |
+| Edit hero badges / role line | `src/content/site.ts` (`badges`, max 2; `roles`, cycled; `leadRole`, first in a new session)             |
+| Add a menu link              | `src/content/navigation.ts` (max 3; the `#id` must exist on the page)                                    |
+| Publish a blog post          | `src/content/posts/<slug>.mdx` + one entry in `src/content/posts/index.ts`                               |
+| Add a page section           | new file in `components/sections/`, wrap in `<Section id label>`, add to `app/page.tsx` and header `nav` |
+| Add a route                  | `src/app/<route>/page.tsx` + add it to `src/app/sitemap.ts`                                              |
+| Call an external service     | server-side only (Server Action / Route Handler), key in env, origin in CSP. See `docs/SECURITY.md`      |
 
 ## Conventions
 
