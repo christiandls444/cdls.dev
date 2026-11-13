@@ -17,8 +17,10 @@ export type SiteConfig = {
   role: string;
   /** Hero badge lines (role · place). Use exact titles so they match LinkedIn. Max 2. */
   badges: { role: string; org: string }[];
-  /** Shown one at a time (shuffled) when the hero name is hovered or tapped. 1–3 words each. */
+  /** Cycled one at a time (shuffled) in the hero's role line. 1–3 words each. */
   roles: string[];
+  /** Opens the role line on the first visit of a browser session (one of `roles`). */
+  leadRole?: string;
   company: string;
   location: string;
   /** One short line. Keep it under ~12 words. */
