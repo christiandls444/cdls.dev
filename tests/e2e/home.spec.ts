@@ -25,15 +25,6 @@ test("styles load (regression: unstyled page / giant icons)", async ({ page }) =
   expect(biggestSvg).toBeLessThanOrEqual(64);
 });
 
-for (const scheme of ["light", "dark"] as const) {
-  test(`follows ${scheme} color scheme`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: scheme });
-    await page.goto("/");
-    const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bg).toBe(scheme === "dark" ? "rgb(10, 10, 10)" : "rgb(250, 250, 247)");
-  });
-}
-
 test("unknown routes return the 404 page", async ({ page }) => {
   const res = await page.goto("/does-not-exist");
   expect(res?.status()).toBe(404);

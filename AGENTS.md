@@ -34,9 +34,11 @@ src/
     layout.tsx         fonts, metadata, header/footer shell
     page.tsx           home: composes sections only, no markup logic
   components/
-    layout/            site-header, site-footer
+    intro/             CMDLS intro loader + its inline script
+    layout/            site-header, site-footer, menu-dialog
     sections/          one file per page section (hero, projects, about)
-    ui/                small reusable primitives (icon, section, fade-in, logo, social-links)
+    theme/             dark (default) / light toggle + its pre-paint inline script
+    ui/                small reusable primitives (icon, section, fade-in, logo, social-links, inline-script)
   content/             EDIT HERE to change what the site says (site, stack, projects)
   lib/                 helpers (cn, icon builders, custom brand icons)
   types/content.ts     shapes for everything in content/
@@ -77,12 +79,14 @@ npm run format       # prettier (sorts Tailwind classes too)
 
 ## Tests
 
-| Layer            | Where                        | Guards                                                        |
-| ---------------- | ---------------------------- | ------------------------------------------------------------- |
-| Unit (Vitest)    | `tests/unit/`                | content rules: valid links, one-line summaries, unique slugs  |
-| E2E (Playwright) | `tests/e2e/home.spec.ts`     | page renders, no console errors, styles load, light/dark, 404 |
-| Security         | `tests/e2e/security.spec.ts` | security headers, `noopener` links, robots outside production |
-| Accessibility    | `tests/e2e/a11y.spec.ts`     | axe WCAG 2.1 A/AA in light and dark                           |
+| Layer            | Where                           | Guards                                                            |
+| ---------------- | ------------------------------- | ----------------------------------------------------------------- |
+| Unit (Vitest)    | `tests/unit/`                   | content rules: valid links, one-line summaries, unique slugs      |
+| E2E (Playwright) | `tests/e2e/home.spec.ts`        | page renders, no console errors, styles load, 404                 |
+| Theme            | `tests/e2e/theme.spec.ts`       | dark by default, toggle switches + remembers, no flash            |
+| Menu stress      | `tests/e2e/menu-stress.spec.ts` | rapid taps, Escape/link mid-animation, theme spam, reduced motion |
+| Security         | `tests/e2e/security.spec.ts`    | security headers, `noopener` links, robots outside production     |
+| Accessibility    | `tests/e2e/a11y.spec.ts`        | axe WCAG 2.1 A/AA in light and dark                               |
 
 Add a test with every feature. If you add a route, add it to the header test loop in `security.spec.ts`.
 
